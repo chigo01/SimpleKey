@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+import 'package:simple_key/src/core/presentation/views/PaymentPage.dart';
+import 'package:simple_key/src/core/presentation/views/homeScreen.dart';
+import 'package:simple_key/src/core/presentation/views/menu_widget.dart';
+
+class App extends StatefulWidget {
+  const App({Key? key}) : super(key: key);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  MenuItem currentItem = menuItems[0];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ZoomDrawer(
+        menuBackgroundColor: Theme.of(context).primaryColor,
+        borderRadius: 24.0,
+        angle: -1,
+        slideWidth: MediaQuery.of(context).size.width * .5,
+        menuScreen: Builder(builder: (context) {
+          return MenuPage(
+            currentItem: currentItem,
+            onSelectedItem: (item) {
+              setState(() => currentItem = item);
+              ZoomDrawer.of(context)!.close();
+            },
+          );
+        }),
+        mainScreen: getScreen(),
+      ),
+    );
+  }
+
+  Widget getScreen() {
+    switch (currentItem.title) {
+      case 'Payment':
+        return Payment();
+      case 'Home':
+        return HomeScreen();
+      case 'Profile':
+        return Profile();
+      case 'Settings':
+        return Settings();
+      case 'Notifications':
+        return Notifications();
+      default:
+        return LogOut();
+    }
+  }
+}

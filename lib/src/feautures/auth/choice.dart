@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
-import 'package:simple_key/src/feautures/agent_sign_up.dart';
+import 'package:simple_key/src/feautures/auth/signUps/sign_up.dart';
 
 class SelectAuthType extends StatelessWidget {
   const SelectAuthType({super.key});
@@ -86,7 +86,7 @@ class SelectAuthType extends StatelessWidget {
                       ),
                     ).onTap(
                       () => context.pushTransition(
-                        const AgentSignUpScreen(),
+                        const SignUpScreen(isAgent: true),
                       ),
                     ),
                   ),
@@ -132,6 +132,10 @@ class SelectAuthType extends StatelessWidget {
                           )
                         ],
                       ),
+                    ).onTap(
+                      () => context.pushTransition(
+                        const SignUpScreen(isAgent: false),
+                      ),
                     ),
                   )
                 ],
@@ -143,13 +147,23 @@ class SelectAuthType extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  Text(
-                    "Or",
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor),
-                  ),
+                  context.height < 700
+                      ? Expanded(
+                          child: Text(
+                            "Or",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                        )
+                      : Text(
+                          "Or",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).primaryColor),
+                        ),
                   Text(
                     'Sign Up with',
                     style: TextStyle(
