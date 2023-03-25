@@ -1,20 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../widget/menu_widget.dart';
-
-class Payment extends StatelessWidget {
-  const Payment({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Payment'),
-        leading: MenuWidget(),
-      ),
-    );
-  }
-}
+import 'package:simple_key/src/core/widget/menu_widget.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -23,8 +8,8 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
-        leading: MenuWidget(),
+        title: const Text('Profile'),
+        leading: const MenuWidget(),
       ),
     );
   }
@@ -37,8 +22,8 @@ class Settings extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
-        leading: MenuWidget(),
+        title: const Text('Settings'),
+        leading: const MenuWidget(),
       ),
     );
   }
@@ -51,8 +36,8 @@ class Notifications extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
-        leading: MenuWidget(),
+        title: const Text('Notifications'),
+        leading: const MenuWidget(),
       ),
     );
   }
@@ -65,8 +50,8 @@ class LogOut extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('logout'),
-        leading: MenuWidget(),
+        title: const Text('logout'),
+        leading: const MenuWidget(),
       ),
     );
   }

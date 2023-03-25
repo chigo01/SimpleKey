@@ -23,3 +23,18 @@ extension WidgetExtension on Widget {
     );
   }
 }
+
+extension Validation on String {
+  bool get validatePassword {
+    String pattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{6,}$';
+    RegExp regExp = RegExp(pattern);
+    return regExp.hasMatch(this);
+  }
+
+  bool get isValidEmail {
+    return RegExp(
+            r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+        .hasMatch(this);
+  }
+}

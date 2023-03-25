@@ -60,7 +60,9 @@ List<AgentProperty> properties = [
       'assets/images/images1.jpg',
       'assets/images/images2.jpg',
     ],
-    propertyDescription: 'This is a very nice house with a very nice view',
+    propertyDescription: 'This is a very nice house with a very nice view'
+        'This is a very nice house with a very nice view'
+        'This is a very nice house with a very nice view',
     propertyId: '1',
     propertyOwnerId: '1',
     propertyOwnerName: 'Peter Doe',

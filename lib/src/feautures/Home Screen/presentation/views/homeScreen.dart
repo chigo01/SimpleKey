@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:simple_key/src/core/domain/property.dart';
+import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
+import 'package:simple_key/src/core/utils/constants.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
+import 'package:simple_key/src/core/widget/menu_widget.dart';
+import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/PropertyDetailedScreen.dart';
 
-import '../../widget/menu_widget.dart';
-
-List<String> propertyType = [
-  'House',
-  'Apartment',
-  'Land',
-  'Warehouse',
-  'Hotel',
-  'Event Center',
-];
 List<IconData> icon = [
   Icons.king_bed_sharp,
   Icons.bathtub_sharp,
@@ -148,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IndexedStack(
               index: currentIndex,
               children: [
-                Container(
+                SizedBox(
                   height: context.height,
                   width: context.width,
                   // color: Colors.red,
@@ -185,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return {
                                         0: "${element.numberOfRooms}",
                                         1: "${element.numberOfBathrooms}",
-                                        2: "${element.meters} mm",
+                                        2: "${element.meters} sqft",
                                       }[indexAt] ??
                                       '';
                                 }
@@ -206,7 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         children: [
                                           Expanded(
                                             flex: 4,
-                                            child: Container(
+                                            child: SizedBox(
                                               height: 200,
                                               width: 280,
                                               // color: Colors.blue,
@@ -222,54 +216,62 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       width: 280,
                                                     ),
                                                     Positioned(
-                                                      bottom: 10,
-                                                      left: 60,
-                                                      child: Container(
-                                                        height: 60,
-                                                        width: 150,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: const Color(
-                                                                  0xff857b83)
-                                                              .withOpacity(0.8),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            const Spacer(),
-                                                            const Text(
-                                                              "Price",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 12,
+                                                      left: 10,
+                                                      top: 30,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(50.0),
+                                                        child: Container(
+                                                          height: 60,
+                                                          width: 150,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color(
+                                                                    0xff857b83)
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              const Spacer(),
+                                                              const Text(
+                                                                "Price",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 12,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            const Spacer(),
-                                                            Text(
-                                                              NumberFormat.currency(
-                                                                      symbol:
-                                                                          "₦ ",
-                                                                      decimalDigits:
-                                                                          0)
-                                                                  .format(element
-                                                                      .propertyPrice),
+                                                              const Spacer(),
+                                                              Text(
+                                                                NumberFormat.currency(
+                                                                        symbol:
+                                                                            "₦ ",
+                                                                        decimalDigits:
+                                                                            0)
+                                                                    .format(element
+                                                                        .propertyPrice),
 
-                                                              // "\$${properties[index].propertyPrice}",
-                                                              style:
-                                                                  const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 12,
+                                                                // "\$${properties[index].propertyPrice}",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 12,
+                                                                ),
                                                               ),
-                                                            ),
-                                                            const Spacer(),
-                                                          ],
+                                                              const Spacer(),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -280,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           Expanded(
                                             flex: 2,
-                                            child: Container(
+                                            child: SizedBox(
                                               height: 40,
                                               width: 280,
                                               //color: Colors.red,
@@ -382,6 +384,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ),
+                                ).onTap(
+                                  () => context.pushTransition(
+                                    PropertyDetailsScreen(
+                                        agentProperty: element),
+                                  ),
                                 );
                               },
                             ),
@@ -404,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                             height: 200,
                             width: context.width,
                             child: ListView.builder(
@@ -415,85 +422,85 @@ class _HomeScreenState extends State<HomeScreen> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Container(
-                                      height: context.height * 0.15,
-                                      width: context.width,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(
-                                              height: context.height * 0.15,
-                                              width: context.width * 0.3,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                  image: AssetImage(
-                                                    element.propertyImages[0],
-                                                  ),
-                                                  fit: BoxFit.cover,
+                                    height: context.height * 0.15,
+                                    width: context.width,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            height: context.height * 0.15,
+                                            width: context.width * 0.3,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                  element.propertyImages[0],
                                                 ),
+                                                fit: BoxFit.cover,
                                               ),
                                             ),
                                           ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    element.propertyName,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleLarge
-                                                        ?.copyWith(
-                                                          fontSize: 16,
-                                                        ),
-                                                  ),
-                                                  const SizedBox(height: 5),
-                                                  Text(
-                                                    element.propertyLocation,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .labelMedium
-                                                        ?.copyWith(
-                                                          fontSize: 13,
-                                                          color: Colors.grey,
-                                                        ),
-                                                  ),
-                                                  const SizedBox(height: 10),
-                                                  Text(
-                                                    NumberFormat.currency(
-                                                            symbol: "₦ ",
-                                                            decimalDigits: 0)
-                                                        .format(element
-                                                            .propertyPrice),
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyMedium
-                                                        ?.copyWith(
-                                                          fontSize: 15,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                  ),
-                                                ],
-                                              ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 17, bottom: 8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  element.propertyName,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge
+                                                      ?.copyWith(
+                                                        fontSize: 16,
+                                                      ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  element.propertyLocation,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium
+                                                      ?.copyWith(
+                                                        fontSize: 13,
+                                                        color: Colors.grey,
+                                                      ),
+                                                ),
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  NumberFormat.currency(
+                                                          symbol: "₦ ",
+                                                          decimalDigits: 0)
+                                                      .format(element
+                                                          .propertyPrice),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        fontSize: 15,
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                          )
-                                        ],
-                                      )),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                             )

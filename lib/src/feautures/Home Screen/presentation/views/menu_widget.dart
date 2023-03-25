@@ -26,7 +26,7 @@ class MenuPage extends StatelessWidget {
                     leading: Icon(item.icon, color: Colors.white),
                     title: Text(
                       item.title,
-                      style: TextStyle(fontSize: 10, color: Colors.white),
+                      style: const TextStyle(fontSize: 10, color: Colors.white),
                     ),
                     onTap: () {
                       // item.onTap();
@@ -56,7 +56,7 @@ class MenuItem {
 
 List<MenuItem> menuItems = [
   MenuItem('Home', Icons.home),
-  MenuItem('Payment', Icons.payment),
+  MenuItem('Post Property', Icons.home_work_sharp),
   MenuItem('Profile', Icons.person),
   MenuItem('Settings', Icons.settings),
   MenuItem("Notifications", Icons.notifications),

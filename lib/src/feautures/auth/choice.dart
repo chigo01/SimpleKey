@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
+import 'package:simple_key/src/feautures/auth/data/controller/provider/provider.dart';
 import 'package:simple_key/src/feautures/auth/signUps/sign_up.dart';
 
 class SelectAuthType extends StatelessWidget {
@@ -145,51 +147,59 @@ class SelectAuthType extends StatelessWidget {
             const SizedBox(height: 10),
 
             Expanded(
-              child: Column(
-                children: [
-                  context.height < 700
-                      ? Expanded(
-                          child: Text(
+              child: Consumer(builder:
+                  (BuildContext context, WidgetRef ref, Widget? child) {
+                return Column(
+                  children: [
+                    context.height < 700
+                        ? Expanded(
+                            child: Text(
+                              "Or",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          )
+                        : Text(
                             "Or",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).primaryColor),
                           ),
-                        )
-                      : Text(
-                          "Or",
-                          style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor),
-                        ),
-                  Text(
-                    'Sign Up with',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    height: 50,
-                    width: 200,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        // color: Colors.white,
-                        gradient: gradient()),
-                    child: Center(
-                      child: Image.asset(
-                        "assets/images/google.jpg",
-                        height: 30,
-                      ),
+                    Text(
+                      'Sign Up with',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text("Note : You can only be signed up as a Buyer")
-                ],
-              ),
+                    const SizedBox(height: 10),
+                    Container(
+                      height: 50,
+                      width: 200,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          // color: Colors.white,
+                          gradient: gradient()),
+                      child: Center(
+                        child: Image.asset(
+                          "assets/images/google.jpg",
+                          height: 30,
+                        ),
+                      ),
+                    ).onTap(() {
+                      context.pushTransition(const SignUpScreen(isAgent: true));
+                      ref
+                          .read(authNotifierProvider.notifier)
+                          .signInWithGoogle(context);
+                    }),
+                    const SizedBox(height: 10),
+                    const Text("Note : You can only be signed up as a Buyer")
+                  ],
+                );
+              }),
             ),
           ],
         ),

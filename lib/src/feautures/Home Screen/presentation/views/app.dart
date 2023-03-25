@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
-import 'package:simple_key/src/core/presentation/views/PaymentPage.dart';
-import 'package:simple_key/src/core/presentation/views/homeScreen.dart';
-import 'package:simple_key/src/core/presentation/views/menu_widget.dart';
+import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/homeScreen.dart';
+import 'package:simple_key/src/feautures/propertyPost/presentation/views/propertEntry.dart';
+
+import 'PaymentPage.dart';
+import 'menu_widget.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -37,8 +39,8 @@ class _AppState extends State<App> {
 
   Widget getScreen() {
     switch (currentItem.title) {
-      case 'Payment':
-        return Payment();
+      case 'Post Property':
+        return const PropertyPost();
       case 'Home':
         return HomeScreen();
       case 'Profile':
