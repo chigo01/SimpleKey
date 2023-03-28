@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:simple_key/src/core/domain/property.dart';
+
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/read_more.dart';
+import 'package:simple_key/src/model/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 final currentIndex = StateProvider<int>((ref) => 0);
@@ -41,7 +44,7 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 height: 400,
                 padding:
@@ -74,10 +77,34 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                                   child: Center(
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(
-                                        images,
+                                      // child: Image.network(
+                                      //   images,
+                                      //   fit: BoxFit.cover,
+                                      //   width: 1000,
+                                      // ),
+                                      child: CachedNetworkImage(
+                                        imageUrl: images,
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                        placeholder: (BuildContext context,
+                                                String url) =>
+                                            SpinKitFadingCircle(
+                                          size: 80,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                color: index.isEven
+                                                    ? Colors.white
+                                                    : Theme.of(context)
+                                                        .primaryColor,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                        maxWidthDiskCache: 500,
+                                        maxHeightDiskCache: 300,
                                         fit: BoxFit.cover,
-                                        width: 1000,
                                       ),
                                     ),
                                   ),

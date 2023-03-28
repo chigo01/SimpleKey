@@ -37,4 +37,18 @@ extension Validation on String {
             r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
         .hasMatch(this);
   }
+
+  double get toDouble {
+    if (isNotEmpty) {
+      return double.parse(this);
+    }
+    return 0.0;
+  }
+
+  int get toInt {
+    if (isNotEmpty) {
+      return int.parse(this);
+    }
+    return 0;
+  }
 }

@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 class TextFieldColumn extends StatelessWidget {
-  const TextFieldColumn({
-    super.key,
-    required this.hintText,
-    required this.headerText,
-    this.maxLength,
-    this.maxLines,
-    required this.controller,
-    this.keyboardType,
-    this.obscureText = false,
-    this.obscuringCharacter = '*',
-    this.suffixIcon,
-    this.validator,
-    this.focusNode,
-    this.onFieldSubmitted,
-  });
+  const TextFieldColumn(
+      {super.key,
+      required this.hintText,
+      required this.headerText,
+      this.maxLength,
+      this.maxLines,
+      required this.controller,
+      this.keyboardType,
+      this.obscureText = false,
+      this.obscuringCharacter = '*',
+      this.suffixIcon,
+      this.validator,
+      this.focusNode,
+      this.onFieldSubmitted,
+      this.errorStyle});
 
   final String hintText;
   final String headerText;
@@ -29,6 +29,7 @@ class TextFieldColumn extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final FocusNode? focusNode;
   final ValueChanged<String>? onFieldSubmitted;
+  final TextStyle? errorStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +64,7 @@ class TextFieldColumn extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: hintText,
                 errorMaxLines: 2,
+                errorStyle: errorStyle,
                 fillColor: Theme.of(context).primaryColor.withOpacity(0.3),
                 filled: true,
                 border: OutlineInputBorder(
