@@ -21,3 +21,23 @@ final getAllProperties =
     StreamNotifierProvider<ProductReadNotifier, List<AgentProperty>>(
   () => ProductReadNotifier(),
 );
+// final getPropertyByCategory = AsyncNotifierProvider<GetProductByCategory, void>(
+//   () => GetProductByCategory(),
+// );
+
+final getRecentPropertyByCategory =
+    StreamProvider.family<List<AgentProperty>, String>(
+  (ref, category) => ref
+      .watch(propertyRepositoryProvider)
+      .getRecentlyPostedPropertyByCategory(category),
+);
+// final  getPropertyByCategory= FutureProvider((ref) => null)
+final getAllPropertyByCategory =
+    StreamProvider.family<List<AgentProperty>, String>(
+  (ref, category) =>
+      ref.watch(propertyRepositoryProvider).getAllPropertyByCategory(category),
+);
+final getAllPropertyByAgent =
+    StreamProvider.family<List<AgentProperty>, String>(
+  (ref, id) => ref.watch(propertyRepositoryProvider).getAllPropertyByAgent(id),
+);

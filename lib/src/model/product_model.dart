@@ -16,6 +16,7 @@ class AgentProperty {
   final int? numberOfBathrooms;
   final int meters;
   final DateTime createdAt;
+  final String agentProfileImage;
 
   AgentProperty({
     required this.propertyName,
@@ -31,6 +32,7 @@ class AgentProperty {
     required this.numberOfBathrooms,
     required this.meters,
     required this.createdAt,
+    required this.agentProfileImage,
   });
 
   AgentProperty copyWith({
@@ -47,6 +49,7 @@ class AgentProperty {
     int? numberOfBathrooms,
     int? meters,
     DateTime? createdAt,
+    String? agentProfileImage,
   }) {
     return AgentProperty(
       propertyName: propertyName ?? this.propertyName,
@@ -62,6 +65,7 @@ class AgentProperty {
       numberOfBathrooms: numberOfBathrooms ?? this.numberOfBathrooms,
       meters: meters ?? this.meters,
       createdAt: createdAt ?? this.createdAt,
+      agentProfileImage: agentProfileImage ?? this.agentProfileImage,
     );
   }
 
@@ -80,6 +84,7 @@ class AgentProperty {
       'numberOfBathrooms': numberOfBathrooms,
       'meters': meters,
       'createdAt': createdAt,
+      'agentProfileImage': agentProfileImage,
     };
   }
 
@@ -99,6 +104,7 @@ class AgentProperty {
       numberOfBathrooms: map['numberOfBathrooms'] as int,
       meters: map['meters'] as int,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      agentProfileImage: map['agentProfileImage'] as String,
     );
   }
 

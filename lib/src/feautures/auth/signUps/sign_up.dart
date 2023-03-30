@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:simple_key/src/core/providers/auth_providers.dart';
 import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/cam.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/utils/show_snackbar.dart';
+import 'package:simple_key/src/core/widgets/loading_indicator.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/app.dart';
 import 'package:simple_key/src/feautures/auth/data/controller/provider/provider.dart';
 import 'package:simple_key/src/feautures/auth/presentation/widget/text_field.dart';
@@ -30,10 +31,12 @@ class SignUpScreen extends HookConsumerWidget {
     final addressController = useTextEditingController();
     final companyController = useTextEditingController();
     final aboutController = useTextEditingController();
-    final user = FirebaseAuth.instance.currentUser;
+    // final user = FirebaseAuth.instance.currentUser;
     final passwordVisibility = ref.watch(obscureText);
     final authRepo = ref.watch(authNotifierProvider);
+    final user = ref.watch(firebaseAuthProvider);
     final imagePicked = ref.watch(imagePath);
+    final imageUrl = ref.watch(image);
     FocusNode nameFocusNode = useFocusNode();
     FocusNode emailFocusNode = useFocusNode();
     FocusNode passwordFocusNode = useFocusNode();
@@ -41,24 +44,6 @@ class SignUpScreen extends HookConsumerWidget {
     FocusNode addressFocusNode = useFocusNode();
     FocusNode companyFocusNode = useFocusNode();
     FocusNode aboutFocusNode = useFocusNode();
-
-    late double height;
-    if (isAgent) {
-      // height =
-      // context.height < 800 ? context.height * 1.4 : context.height * 1.25;
-      if (context.height < 700) {
-        height = context.height * 1.55;
-      } else if (context.height < 800) {
-        height = context.height * 1.4;
-      } else if (context.height >= 900) {
-        height = context.height * 1.1;
-      } else {
-        height = context.height * 1.25;
-      }
-    } else {
-      height =
-          context.height < 700 ? context.height * 1.1 : context.height * 0.9;
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -123,7 +108,7 @@ class SignUpScreen extends HookConsumerWidget {
                               ),
                             ),
                     ),
-                    const Text('Add Image')
+                    if (imagePicked.isNull) const Text('Add Image')
                   ],
                 ).onTap(
                   () => showModalBottomSheet(
@@ -365,8 +350,7 @@ class SignUpScreen extends HookConsumerWidget {
                                     child: Center(
                                       child: authRepo.isLoading
                                           ? const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                              child: Spinner(size: 40),
                                             )
                                           : const Text(
                                               'Create Account',
@@ -385,21 +369,19 @@ class SignUpScreen extends HookConsumerWidget {
                                           userRole:
                                               isAgent ? "Agent" : "Customer",
                                           email: emailController.text,
-
                                           phone: phoneController.text,
                                           location: addressController.text,
-                                          image: imagePicked,
                                           companyName: companyController.text,
                                           description: aboutController.text,
-                                          // id: user user!.uid ,
                                         );
                                         ref
                                             .read(authNotifierProvider.notifier)
                                             .signInWithEmailAndPassword(
-                                              emailController.text,
-                                              passwordController.text,
-                                              userModel,
-                                              context,
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                              userModel: userModel,
+                                              context: context,
+                                              ref: ref,
                                             );
                                         Navigator.pushReplacement(
                                           context,
@@ -407,14 +389,14 @@ class SignUpScreen extends HookConsumerWidget {
                                             builder: (context) => const App(),
                                           ),
                                         );
+                                      } else {
+                                        showSnackBar(
+                                          context,
+                                          imagePicked == null
+                                              ? 'Upload an Image for identification'
+                                              : 'Please fix the errors in red before submitting',
+                                        );
                                       }
-
-                                      showSnackBar(
-                                        context,
-                                        imagePicked == null
-                                            ? 'Upload an Image for identification'
-                                            : 'Please fix the errors in red before submitting',
-                                      );
                                     },
                                   );
                                 },

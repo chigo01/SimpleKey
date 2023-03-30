@@ -52,24 +52,64 @@ class PropertyRepository {
   Stream<List<AgentProperty>> getAllProperties() {
     return _fireStore
         .collection(FirebaseConstants.propertiesCollection)
+        .orderBy('createdAt', descending: true)
+        .limit(4)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map(
-              (doc) => AgentProperty.fromMap(
-                doc.data(),
-              ),
-            )
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => AgentProperty.fromMap(
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
   }
 
-  Future<List<AgentProperty>> getPropertyByCategory(String category) {
+  Stream<List<AgentProperty>> getRecentlyPostedPropertyByCategory(
+      String category) {
     return _fireStore
         .collection(FirebaseConstants.propertiesCollection)
-        .where('propertyType', isEqualTo: category)
         .orderBy('createdAt', descending: true)
-        .get()
-        .then(
-          (value) => value.docs
+        .where('propertyType', isEqualTo: category)
+        .limit(4)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => AgentProperty.fromMap(
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<AgentProperty>> getAllPropertyByCategory(String category) {
+    return _fireStore
+        .collection(FirebaseConstants.propertiesCollection)
+        .orderBy('createdAt', descending: true)
+        .where('propertyType', isEqualTo: category)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => AgentProperty.fromMap(
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<AgentProperty>> getAllPropertyByAgent(String id) {
+    return _fireStore
+        .collection(FirebaseConstants.propertiesCollection)
+        .orderBy('createdAt', descending: true)
+        .where('propertyOwnerId', isEqualTo: id)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
               .map(
                 (doc) => AgentProperty.fromMap(
                   doc.data(),

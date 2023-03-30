@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 final imagePath = StateProvider<String?>((ref) => null);
+final image = StateProvider<String?>((ref) => null);
 final imagePaths = StateProvider<List<String>>((ref) => []);
 Future<void> getImage(WidgetRef ref, String? type) async {
   final ImagePicker picker = ImagePicker();
@@ -25,6 +26,7 @@ Future<void> getImages(WidgetRef ref) async {
   final pickedFile = await picker.pickMultiImage(
     maxHeight: double.infinity,
     maxWidth: double.infinity,
+    imageQuality: 50,
   );
 
   if (pickedFile.isNotEmpty) {

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simple_key/src/core/utils/show_snackbar.dart';
+import 'package:simple_key/src/core/widgets/loading_indicator.dart';
 
 class AsyncWidget<T> extends StatelessWidget {
   final AsyncValue<T> asyncValue;
@@ -16,7 +17,7 @@ class AsyncWidget<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return asyncValue.when(
       data: data,
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: Spinner()),
       error: (error, stack) => Text('Error: $error'),
     );
   }

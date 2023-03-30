@@ -40,18 +40,62 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    User? user = auth.currentUser;
+    // FirebaseAuth auth = FirebaseAuth.instance;
+    // User? user = auth.authStateChanges();
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      scrollBehavior: MyCustomScrollBehavior(),
-      useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      builder: DevicePreview.appBuilder,
-      title: 'Flutter Demo',
-      theme: AppTheme.light,
-      home: user != null ? const App() : const SelectAuthType(),
+        debugShowCheckedModeBanner: false,
+        scrollBehavior: MyCustomScrollBehavior(),
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
+        title: 'Flutter Demo',
+        theme: AppTheme.light,
+        home:
+            const AuthStateListener() //user != null ? const App() : const SelectAuthType(),
+        );
+  }
+}
+
+class AuthStateListener extends StatefulWidget {
+  const AuthStateListener({super.key});
+
+  @override
+  State<AuthStateListener> createState() => _AuthStateListenerState();
+}
+
+class _AuthStateListenerState extends State<AuthStateListener> {
+  late Stream<User?> _authStateChangesStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _authStateChangesStream = FirebaseAuth.instance.authStateChanges();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: _authStateChangesStream,
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          User? user = snapshot.data;
+          if (user == null) {
+            // User is not logged in
+            return const SelectAuthType();
+          } else {
+            // User is logged in
+            return const App();
+          }
+        } else {
+          // Connection state is not yet known, return a loading spinner
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }

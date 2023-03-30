@@ -26,7 +26,7 @@ class MenuPage extends StatelessWidget {
                     leading: Icon(item.icon, color: Colors.white),
                     title: Text(
                       item.title,
-                      style: const TextStyle(fontSize: 10, color: Colors.white),
+                      style: const TextStyle(fontSize: 9, color: Colors.white),
                     ),
                     onTap: () {
                       // item.onTap();

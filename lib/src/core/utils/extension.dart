@@ -52,3 +52,8 @@ extension Validation on String {
     return 0;
   }
 }
+
+extension NotNullExtension<T> on T? {
+  bool get isNotNull => this != null;
+  bool get isNull => this == null;
+}

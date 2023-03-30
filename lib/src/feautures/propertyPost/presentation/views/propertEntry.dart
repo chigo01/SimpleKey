@@ -188,24 +188,28 @@ class PropertyPost extends HookConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        height: 80,
-                        width: context.width * 0.8,
-                        child: Wrap(
-                          spacing: 10,
-                          children: [
-                            WrapContainer(
-                              text: 'BedRooms',
-                              controller: bedController,
-                            ),
-                            WrapContainer(
-                              text: 'BathRooms',
-                              controller: bathController,
-                            ),
-                          ],
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: SizedBox(
+                          height: 80,
+                          width: context.width * 0.8,
+                          child: Wrap(
+                            spacing: 10,
+                            children: [
+                              WrapContainer(
+                                text: 'BedRooms',
+                                controller: bedController,
+                              ),
+                              WrapContainer(
+                                text: 'BathRooms',
+                                controller: bathController,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+                      const SizedBox(height: 10),
                       TextFieldColumn(
                         hintText: 'Square kilometers',
                         headerText: 'Land Area',
@@ -271,13 +275,13 @@ class PropertyPost extends HookConsumerWidget {
                         proType != "Select Property Type") {
                       context.pushTransition(
                         NextPageScreen(
-                          meters: landAreaController.text.toInt,
-                          numberOfBathrooms: bathController.text.toInt,
+                          meters: landAreaController,
+                          numberOfBathrooms: bathController,
                           propertyType: proType!,
-                          numberOfRooms: bedController.text.toInt,
-                          propertyPrice: amountController.text.toDouble,
-                          propertyLocation: locationController.text,
-                          propertyName: nameController.text,
+                          numberOfRooms: bedController,
+                          propertyPrice: amountController,
+                          propertyLocation: locationController,
+                          propertyName: nameController,
                         ),
                       );
                     } else {

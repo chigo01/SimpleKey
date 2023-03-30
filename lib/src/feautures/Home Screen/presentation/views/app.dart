@@ -28,7 +28,8 @@ class _AppState extends State<App> {
             currentItem: currentItem,
             onSelectedItem: (item) {
               setState(() => currentItem = item);
-              ZoomDrawer.of(context)!.close();
+
+              ZoomDrawer.of(context)?.close();
             },
           );
         }),
@@ -42,15 +43,15 @@ class _AppState extends State<App> {
       case 'Post Property':
         return const PropertyPost();
       case 'Home':
-        return HomeScreen();
+        return const HomeScreen();
       case 'Profile':
-        return Profile();
+        return const Profile();
       case 'Settings':
-        return Settings();
+        return const Settings();
       case 'Notifications':
-        return Notifications();
+        return const Notifications();
       default:
-        return LogOut();
+        return const LogOut();
     }
   }
 }

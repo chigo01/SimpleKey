@@ -1,13 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_key/src/core/route/route_navigation.dart';
+import 'package:simple_key/src/core/widget/arrow_back.dart';
+import 'package:simple_key/src/core/widgets/images_caches.dart';
 
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/read_more.dart';
 import 'package:simple_key/src/model/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../../../userProfile/presentation/views/agent_property.dart';
 
 final currentIndex = StateProvider<int>((ref) => 0);
 
@@ -24,26 +27,7 @@ class PropertyDetailsScreen extends HookConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, top: 5),
-                child: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Theme.of(context).primaryColor.withOpacity(0.2),
-                  ),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
+              const ArrowBack(),
               const SizedBox(height: 10),
               Container(
                 height: 400,
@@ -77,34 +61,9 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                                   child: Center(
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      // child: Image.network(
-                                      //   images,
-                                      //   fit: BoxFit.cover,
-                                      //   width: 1000,
-                                      // ),
-                                      child: CachedNetworkImage(
+                                      child: ImageCaches(
                                         imageUrl: images,
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                        placeholder: (BuildContext context,
-                                                String url) =>
-                                            SpinKitFadingCircle(
-                                          size: 80,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                color: index.isEven
-                                                    ? Colors.white
-                                                    : Theme.of(context)
-                                                        .primaryColor,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                        maxWidthDiskCache: 500,
-                                        maxHeightDiskCache: 300,
-                                        fit: BoxFit.cover,
+                                        width: 1600,
                                       ),
                                     ),
                                   ),
@@ -112,7 +71,7 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                                 Positioned(
                                   left: 30,
                                   right: 30,
-                                  top: 80,
+                                  top: 60,
                                   child: Padding(
                                     padding: const EdgeInsets.all(50.0),
                                     child: Container(
@@ -208,11 +167,11 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        const Align(
+                        Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            'Posted on 12 mar 2023',
-                            style: TextStyle(
+                            'Uploaded on ${DateFormat("d MMM y").format(agentProperty.createdAt)}', // 'Posted on 12 mar 2023',
+                            style: const TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -281,12 +240,14 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                       children: [
                         Container(
                           height: 60,
-                          width: 60,
+                          width: 70,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            image: const DecorationImage(
-                              image: AssetImage('assets/images/profile.jpg'),
-                              fit: BoxFit.cover,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: ImageCaches(
+                              imageUrl: agentProperty.agentProfileImage,
                             ),
                           ),
                         ),
@@ -307,7 +268,9 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () => context.pushTransition(
+                            AgentProfile(agentProperty.propertyOwnerId),
+                          ),
                           icon: const Icon(
                             Icons.arrow_forward,
                           ),
@@ -335,32 +298,34 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                   ],
                   color: Colors.white,
                 ),
-                child: Column(
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Description',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Description',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    ReadMoreText(
-                      agentProperty.propertyDescription,
-                      trimLines: 3,
-                      colorClickableText: Colors.pink,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: "....show more",
-                      trimExpandedText: ".....show less",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).primaryColor,
+                      const SizedBox(height: 10),
+                      ReadMoreText(
+                        agentProperty.propertyDescription,
+                        trimLines: 3,
+                        colorClickableText: Colors.pink,
+                        trimMode: TrimMode.Line,
+                        trimCollapsedText: "....show more",
+                        trimExpandedText: ".....show less",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).primaryColor,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               )
             ],

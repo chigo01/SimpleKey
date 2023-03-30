@@ -1,4 +1,4 @@
-class AgentProperty {
+class AgentProperty1 {
   final String propertyName;
   final String propertyType;
   final String propertyLocation;
@@ -12,7 +12,7 @@ class AgentProperty {
   final int numberOfBathrooms;
   final int meters;
 
-  AgentProperty({
+  AgentProperty1({
     required this.meters,
     required this.propertyName,
     required this.propertyType,
@@ -28,8 +28,8 @@ class AgentProperty {
   });
 }
 
-List<AgentProperty> properties = [
-  AgentProperty(
+List<AgentProperty1> properties = [
+  AgentProperty1(
     meters: 500,
     propertyName: 'Bluish House',
     propertyType: 'House',
@@ -48,7 +48,7 @@ List<AgentProperty> properties = [
     numberOfRooms: 3,
     numberOfBathrooms: 4,
   ),
-  AgentProperty(
+  AgentProperty1(
     meters: 700,
     propertyName: 'Bonny Home',
     propertyType: 'House',
@@ -69,7 +69,7 @@ List<AgentProperty> properties = [
     numberOfRooms: 6,
     numberOfBathrooms: 7,
   ),
-  AgentProperty(
+  AgentProperty1(
     meters: 570,
     propertyName: 'Green pack',
     propertyType: 'House',

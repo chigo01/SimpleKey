@@ -3,17 +3,16 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:simple_key/src/core/providers/auth_providers.dart';
 import 'package:simple_key/src/core/utils/cam.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/utils/show_snackbar.dart';
-import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/homeScreen.dart';
+import 'package:simple_key/src/core/widgets/loading_indicator.dart';
 import 'package:simple_key/src/feautures/auth/presentation/widget/text_field.dart';
 import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
 import 'package:simple_key/src/feautures/propertyPost/presentation/widgets/scrolling-text.dart';
+import 'package:simple_key/src/feautures/userProfile/data/controller/providers/providers.dart';
 import 'package:simple_key/src/model/product_model.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,13 +29,13 @@ class NextPageScreen extends HookConsumerWidget {
     this.numberOfBathrooms,
     required this.meters,
   }) : super(key: key);
-  final String propertyName;
+  final TextEditingController propertyName;
   final String propertyType;
-  final String propertyLocation;
-  final double propertyPrice;
-  final int? numberOfRooms;
-  final int? numberOfBathrooms;
-  final int meters;
+  final TextEditingController propertyLocation;
+  final TextEditingController propertyPrice;
+  final TextEditingController? numberOfRooms;
+  final TextEditingController? numberOfBathrooms;
+  final TextEditingController meters;
 
   static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -46,7 +45,7 @@ class NextPageScreen extends HookConsumerWidget {
     final proType = ref.watch(property);
     final propertyImages = <String>[];
     final DateTime createdAt = DateTime.now();
-    final user = ref.watch(firebaseAuthProvider).currentUser;
+    final user = ref.watch(getUser).valueOrNull;
     final images = ref.watch(imagePaths);
     final upload = ref.watch(productPostProvider);
 
@@ -215,18 +214,7 @@ class NextPageScreen extends HookConsumerWidget {
                     ),
                     child: Center(
                       child: upload.isLoading
-                          ? SpinKitFadingCircle(
-                              size: 20,
-                              itemBuilder: (BuildContext context, int index) {
-                                return DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: index.isEven
-                                        ? Colors.white
-                                        : Theme.of(context).primaryColor,
-                                  ),
-                                );
-                              },
-                            )
+                          ? const Spinner(size: 40)
                           : const Text(
                               'Upload',
                               style: TextStyle(
@@ -236,46 +224,63 @@ class NextPageScreen extends HookConsumerWidget {
                               ),
                             ),
                     ),
-                  ).onTap(() {
-                    final property = AgentProperty(
-                      propertyName: propertyName,
-                      propertyType: propertyType,
-                      propertyLocation: propertyLocation,
-                      propertyPrice: propertyPrice,
-                      propertyImages: propertyImages,
-                      propertyDescription: descriptionController.text,
-                      propertyId: const Uuid().v4(),
-                      propertyOwnerId: user!.uid,
-                      propertyOwnerName: user.displayName!,
-                      numberOfRooms: numberOfRooms,
-                      numberOfBathrooms: numberOfBathrooms,
-                      meters: meters,
-                      createdAt: createdAt,
-                    );
-                    if (images.isNotEmpty &&
-                        _formKey.currentState!.validate()) {
-                      ref
-                          .read(productPostProvider.notifier)
-                          .uploadProperty(ref, propertyImages, property)
-                          .then(
-                            (value) => showSnackBar(
-                                context, 'Property uploaded successfully'),
-                          )
-                          .whenComplete(
-                            () => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            ),
-                          );
-                    } else {
-                      showSnackBar(
-                        context,
-                        'Please give a detailed description of the property and upload property images before uploading',
+                  ).onTap(
+                    () {
+                      final property = AgentProperty(
+                        propertyName: propertyName.text,
+                        propertyType: propertyType,
+                        propertyLocation: propertyLocation.text,
+                        propertyPrice: propertyPrice.text.toDouble,
+                        propertyImages: propertyImages,
+                        propertyDescription: descriptionController.text,
+                        propertyId: const Uuid().v4(),
+                        propertyOwnerId: user?.id ?? "",
+                        propertyOwnerName: user?.userName ?? "",
+                        numberOfRooms: numberOfRooms?.text.toInt,
+                        numberOfBathrooms: numberOfBathrooms?.text.toInt,
+                        meters: meters.text.toInt,
+                        createdAt: createdAt,
+                        agentProfileImage: user?.image ?? "",
                       );
-                    }
-                  }),
+                      if (images.isNotEmpty &&
+                          _formKey.currentState!.validate() &&
+                          user?.userRole == 'Agent') {
+                        ref
+                            .read(productPostProvider.notifier)
+                            .uploadProperty(ref, propertyImages, property)
+                            .then(
+                              (value) => showSnackBar(
+                                context,
+                                'Property uploaded successfully',
+                              ),
+                            )
+                            .whenComplete(() {
+                          ref
+                              .read(imagePaths.notifier)
+                              .update((state) => state = []);
+                          descriptionController.clear();
+                          Navigator.pop(context);
+
+                          propertyName.clear();
+                          propertyLocation.clear();
+                          propertyPrice.clear();
+                          meters.clear();
+                          numberOfRooms?.clear();
+                          numberOfBathrooms?.clear();
+                        });
+                        // } else if (user?.userRole == 'Customer') {
+                        //   showSnackBar(
+                        //     context,
+                        //     'It seems like you are not an Realtor. You are not authorized to upload property',
+                        //   );
+                      } else {
+                        showSnackBar(
+                          context,
+                          'Please give a detailed description of the property and upload property images before uploading',
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

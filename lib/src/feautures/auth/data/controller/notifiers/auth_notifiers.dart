@@ -12,16 +12,20 @@ class AuthNotifier extends AsyncNotifier {
   @override
   FutureOr build() {}
 
-  void signInWithEmailAndPassword(
-    String email,
-    String password,
-    UserModel userModel,
-    BuildContext context,
-  ) {
+  Future<void> signInWithEmailAndPassword({
+    required String email,
+    required String password,
+    required UserModel userModel,
+    required BuildContext context,
+    required WidgetRef ref,
+  }) async {
+    state = const AsyncValue.loading();
+
     final user = ref.watch(authRepositoryProvider).signUpWithEmailAndPassword(
           email,
           password,
           userModel,
+          ref,
         );
 
     user.then(
@@ -34,7 +38,8 @@ class AuthNotifier extends AsyncNotifier {
     );
   }
 
-  void signInWithGoogle(BuildContext context) {
+  Future<void> signInWithGoogle(BuildContext context) async {
+    state = const AsyncValue.loading();
     final user = ref.watch(authRepositoryProvider).signInWithGoogle();
 
     user.then(
