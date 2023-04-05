@@ -3,17 +3,24 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:simple_key/src/core/providers/auth_providers.dart';
+import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/async_widget.dart';
+import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/widget/arrow_back.dart';
 import 'package:simple_key/src/core/widgets/images_caches.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/read_more.dart';
+import 'package:simple_key/src/feautures/message/data/provider/message.dart';
+import 'package:simple_key/src/feautures/message/presentation/views/chat_screen.dart';
 import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
 import 'package:simple_key/src/feautures/userProfile/data/controller/providers/providers.dart';
+import 'package:simple_key/src/model/message.dart';
+import 'package:simple_key/src/model/product_model.dart';
 
 class AgentProfile extends HookConsumerWidget {
-  const AgentProfile(this.id, {super.key});
+  const AgentProfile(this.id, {super.key, required this.agent});
   final String id;
+  final AgentProperty agent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,6 +28,8 @@ class AgentProfile extends HookConsumerWidget {
     final agentProperty = ref.watch(getAllPropertyByAgent(id));
     final agentListings = agentProperty.valueOrNull?.length;
     final currentUser = ref.watch(firebaseAuthProvider).currentUser?.uid;
+
+    //final chats = ref.watch(getSubCollectionRooms).value;
     return Scaffold(
       appBar: AppBar(
         leading: const ArrowBack(),
@@ -75,7 +84,7 @@ class AgentProfile extends HookConsumerWidget {
                         ),
                         subtitle: Row(
                           children: [
-                            const Icon(PhosphorIcons.mapPinBold, size: 15),
+                            PhosphorIcon(PhosphorIcons.bold.mapPin, size: 15),
                             const SizedBox(width: 5),
                             Text(userId.location ?? '',
                                 style: Theme.of(context).textTheme.labelMedium),
@@ -102,8 +111,8 @@ class AgentProfile extends HookConsumerWidget {
                                   backgroundColor: Theme.of(context)
                                       .primaryColor
                                       .withOpacity(0.3),
-                                  child: Icon(
-                                    PhosphorIcons.phoneCallFill,
+                                  child: PhosphorIcon(
+                                    PhosphorIcons.fill.phoneCall,
                                     color: Theme.of(context).primaryColor,
                                     size: 15,
                                   ),
@@ -132,8 +141,8 @@ class AgentProfile extends HookConsumerWidget {
                                   backgroundColor: Theme.of(context)
                                       .primaryColor
                                       .withOpacity(0.3),
-                                  child: Icon(
-                                    PhosphorIcons.envelopeFill,
+                                  child: PhosphorIcon(
+                                    PhosphorIcons.fill.envelope,
                                     color: Theme.of(context).primaryColor,
                                     size: 15,
                                   ),
@@ -162,8 +171,8 @@ class AgentProfile extends HookConsumerWidget {
                                   backgroundColor: Theme.of(context)
                                       .primaryColor
                                       .withOpacity(0.3),
-                                  child: Icon(
-                                    PhosphorIcons.houseFill,
+                                  child: PhosphorIcon(
+                                    PhosphorIcons.fill.house,
                                     color: Theme.of(context).primaryColor,
                                     size: 15,
                                   ),
@@ -225,7 +234,28 @@ class AgentProfile extends HookConsumerWidget {
                                       style: TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                ),
+                                ).onTap(() {
+                                  context.pushTransition(
+                                    ChatScreen(
+                                      agent: agent,
+                                      nav: false,
+                                    ),
+                                  );
+
+                                  final room = Room(
+                                    lastMessage: '',
+                                    lastMessageTime: DateTime.now(),
+                                    roomId: agent.propertyId,
+                                    users: [
+                                      currentUser!,
+                                      agent.propertyOwnerId
+                                    ],
+                                    // agent: agent,
+                                  );
+                                  ref
+                                      .read(messageRepositoryProvider.notifier)
+                                      .createRoom(agent.propertyId, room);
+                                }),
                               ),
                           ],
                         ),

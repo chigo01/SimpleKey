@@ -53,7 +53,6 @@ class PropertyRepository {
     return _fireStore
         .collection(FirebaseConstants.propertiesCollection)
         .orderBy('createdAt', descending: true)
-        .limit(4)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs
@@ -63,6 +62,16 @@ class PropertyRepository {
                 ),
               )
               .toList(),
+        );
+  }
+
+  Stream<AgentProperty> getProperty(String propertyId) {
+    return _fireStore
+        .collection(FirebaseConstants.propertiesCollection)
+        .where('propertyId', isEqualTo: propertyId)
+        .snapshots()
+        .map(
+          (event) => AgentProperty.fromMap(event.docs.first.data()),
         );
   }
 
@@ -90,6 +99,22 @@ class PropertyRepository {
         .collection(FirebaseConstants.propertiesCollection)
         .orderBy('createdAt', descending: true)
         .where('propertyType', isEqualTo: category)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => AgentProperty.fromMap(
+                  doc.data(),
+                ),
+              )
+              .toList(),
+        );
+  }
+
+  Stream<List<AgentProperty>> getAllProperty() {
+    return _fireStore
+        .collection(FirebaseConstants.propertiesCollection)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map(
           (snapshot) => snapshot.docs

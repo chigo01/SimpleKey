@@ -42,6 +42,18 @@ class UserRepository {
     );
   }
 
+  Stream<UserModel> getUserForSender(String id) {
+    final userRef =
+        _firebaseFirestore.collection(FirebaseConstants.usersCollection);
+
+    final userData = userRef.where("id", isEqualTo: id).snapshots();
+    return userData.map(
+      (query) => UserModel.fromMap(
+        query.docs.first.data(),
+      ),
+    );
+  }
+
   Stream<UserModel> getUserForProperty(String propertyOwnerId) {
     final userRef =
         _firebaseFirestore.collection(FirebaseConstants.usersCollection);

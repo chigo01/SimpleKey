@@ -41,3 +41,10 @@ final getAllPropertyByAgent =
     StreamProvider.family<List<AgentProperty>, String>(
   (ref, id) => ref.watch(propertyRepositoryProvider).getAllPropertyByAgent(id),
 );
+final getProperty = StreamProvider.family<AgentProperty, String>(
+  (ref, id) => ref.watch(propertyRepositoryProvider).getProperty(id),
+);
+
+final getAllProperty = StreamProvider<List<AgentProperty>>(
+  (ref) => ref.watch(propertyRepositoryProvider).getAllProperties(),
+);

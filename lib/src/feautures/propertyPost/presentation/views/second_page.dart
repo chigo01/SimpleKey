@@ -154,9 +154,10 @@ class NextPageScreen extends HookConsumerWidget {
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
-                                            children: const [
-                                              Icon(
-                                                PhosphorIcons.fileArrowDownFill,
+                                            children: [
+                                              PhosphorIcon(
+                                                PhosphorIcons
+                                                    .fill.fileArrowDown,
                                                 color: Colors.white,
                                                 size: 40,
                                               ),

@@ -737,10 +737,10 @@ packages:
     dependency: "direct main"
     description:
       name: phosphor_flutter
-      sha256: "82aee69109d55518abbc5d77aeb893bfd2d39796aa51b871cadf2e56d03fa8e3"
+      sha256: "925b6e2031886d5fe0b3719a0497712d26914bdb8e74c217fe990a9c6d60184d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.0"
+    version: "2.0.0"
   platform:
     dependency: transitive
     description:
@@ -890,6 +890,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: sliding_up_panel
+      sha256: "578e90956a6212d1e406373250b2436a0f3afece29aee3c24c8360094d6cf968"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0+1"
   smooth_page_indicator:
     dependency: "direct main"
     description:

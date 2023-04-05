@@ -7,12 +7,15 @@ import 'package:simple_key/src/core/widget/arrow_back.dart';
 import 'package:simple_key/src/core/widgets/images_caches.dart';
 
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/read_more.dart';
+import 'package:simple_key/src/feautures/message/data/provider/message.dart';
+import 'package:simple_key/src/model/message.dart';
 import 'package:simple_key/src/model/product_model.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../userProfile/presentation/views/agent_property.dart';
 
 final currentIndex = StateProvider<int>((ref) => 0);
+final agentProperties = StateProvider<AgentProperty?>((ref) => null);
 
 class PropertyDetailsScreen extends HookConsumerWidget {
   const PropertyDetailsScreen({Key? key, required this.agentProperty})
@@ -268,9 +271,18 @@ class PropertyDetailsScreen extends HookConsumerWidget {
                         ),
                         const Spacer(),
                         IconButton(
-                          onPressed: () => context.pushTransition(
-                            AgentProfile(agentProperty.propertyOwnerId),
-                          ),
+                          onPressed: () {
+                            context.pushTransition(
+                              AgentProfile(
+                                agentProperty.propertyOwnerId,
+                                agent: agentProperty,
+                              ),
+                            );
+
+                            ref.read(agentProperties.notifier).update(
+                                  (state) => state = agentProperty,
+                                );
+                          },
                           icon: const Icon(
                             Icons.arrow_forward,
                           ),

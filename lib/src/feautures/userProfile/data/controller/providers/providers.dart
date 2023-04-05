@@ -8,6 +8,12 @@ final getUser = StreamProvider<UserModel>((ref) async* {
   yield* user.getUser();
 });
 
+final getAllUser =
+    StreamProvider.family<UserModel, String>((ref, senderID) async* {
+  final user = ref.watch(userRepositoryProvider);
+  yield* user.getUserForSender(senderID);
+});
+
 final getUserForProperty =
     StreamProvider.family<UserModel, String>((ref, propertyOwnerId) async* {
   final user = ref.watch(userRepositoryProvider);
