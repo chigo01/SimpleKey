@@ -8,6 +8,7 @@ import 'package:simple_key/src/core/widgets/images_caches.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/PropertyDetailedScreen.dart';
 import 'package:simple_key/src/feautures/message/data/provider/message.dart';
 import 'package:simple_key/src/feautures/message/presentation/views/chat_screen.dart';
+import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
 import 'package:simple_key/src/feautures/userProfile/data/controller/providers/providers.dart';
 
 class MessagePreview extends HookConsumerWidget {
@@ -26,6 +27,8 @@ class MessagePreview extends HookConsumerWidget {
         ?.where((element) => element.users.contains(currentUser))
         .toList();
 
+    // print('Propeerty ${property?.propertyName}');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -42,60 +45,107 @@ class MessagePreview extends HookConsumerWidget {
               ?.length, //newWChats.length, //allUserReceivedMessage?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
             final room = chats?[index];
-            // final user = ref.watch(getUser)
+            final user =
+                room?.users.firstWhere((element) => element != currentUser);
+            final property =
+                ref.watch(getProperty(room?.roomId ?? "")).valueOrNull;
 
-            // final agent =
-            //     ref.watch(getProperty(chats?[index].roomId ?? '')).valueOrNull;
+            final users = ref.watch(getAllUser(user ?? "")).valueOrNull;
 
-            // final msg = message
-            //     ?.where((element) => element.propertyId == room?.roomId)
-            //     .first;
+            print('user $user');
+            print(currentUser);
+            print('property${property?.propertyName}');
 
-            print('mes ${room?.roomId}');
-//
+            // final user = ref.watch(getAllUser(room?.users.first));
             return Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SizedBox(
-                height: 80,
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      height: 70,
-                      width: 70,
-                      child: ClipOval(
-                          child: ImageCaches(
-                              imageUrl:
-                                  "https://picsum.photos/250?image=9") //"https://picsum.photos/250?image=9"),
-                          ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8),
+              child: Container(
+                height: 85,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 4,
+                      offset: const Offset(0, 3), // changes position of shadow
                     ),
-                    const SizedBox(width: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Container(
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 70,
+                        width: 70,
+                        child: ClipOval(
+                            child: ImageCaches(
+                                imageUrl: users?.image ??
+                                    "") //"https://picsum.photos/250?image=9"),
+                            ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: Container(
+                              height: 70,
+                              width: 200,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    users?.userName ?? "",
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Expanded(
+                                    child: Text(
+                                      room?.lastMessage ?? "",
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 13,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: SizedBox(
                           height: 70,
                           width: 200,
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          //  color: Colors.white,
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                "",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 5),
                               Text(
-                                room?.lastMessage ?? "",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                                property?.propertyName ?? "",
                                 style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context).primaryColor),
+                                    fontSize: 15,
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic),
                               ),
                             ],
-                          )),
-                    )
-                  ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ).onTap(

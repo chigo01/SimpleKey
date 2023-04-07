@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:ntp/ntp.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:simple_key/src/core/providers/auth_providers.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
@@ -11,6 +12,7 @@ import 'package:simple_key/src/core/widget/arrow_back.dart';
 import 'package:simple_key/src/core/widgets/images_caches.dart';
 import 'package:simple_key/src/feautures/message/data/provider/message.dart';
 import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
+import 'package:simple_key/src/feautures/userProfile/data/controller/providers/providers.dart';
 import 'package:simple_key/src/model/message.dart';
 import 'package:simple_key/src/model/product_model.dart';
 
@@ -25,7 +27,7 @@ class ChatScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final agent! = ref.watch(agentProperties);
-    final user = ref.watch(firebaseAuthProvider).currentUser?.uid;
+    final currentUser = ref.watch(firebaseAuthProvider).currentUser?.uid;
     //  final User? user1;
 
     TextEditingController messageController = useTextEditingController();
@@ -39,9 +41,14 @@ class ChatScreen extends HookConsumerWidget {
     final room = ref.watch(getSubCollectionRoom(property?.propertyId ?? ""));
     final getRoo = ref.watch(getRoom(property?.propertyId ?? "")).valueOrNull;
     final agentRoo = ref.watch(getRoom(agent?.propertyId ?? "")).valueOrNull;
+    final user = nav
+        ? getRoo?.users.firstWhere((element) => element != currentUser)
+        : agentRoo?.users.firstWhere((element) => element != currentUser);
+
+    final users = ref.watch(getAllUser(user ?? "")).valueOrNull;
 
     final message = ref.watch(getSubcollectionStream);
-    //   final agentRoom = ref.watch(getSubCollectionRoom(nav?property?.propertyId ?? "":agent!.propertyId));
+
     final agentFilterRoom = agentRoom.valueOrNull
         ?.where((element) =>
             element.users.contains(agent!.propertyOwnerId) &&
@@ -56,9 +63,9 @@ class ChatScreen extends HookConsumerWidget {
             element.roomId == property?.propertyId)
         .toList();
 
-    print('firete $filterRoom');
+    // print('firete ${agentFilterRoom?[0].roomId}');
     //print('helll ${filterRoom?[0].roomId}');
-    print('property, $property');
+    // print('property, $property');
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -84,18 +91,21 @@ class ChatScreen extends HookConsumerWidget {
                                   const BoxDecoration(shape: BoxShape.circle),
                               child: ClipOval(
                                 child: ImageCaches(
-                                    imageUrl: nav
+                                    imageUrl: users?.image ??
+                                        "" /*nav
                                         ? property?.agentProfileImage ?? ""
-                                        : agent?.agentProfileImage ?? ""),
+                                        : agent?.agentProfileImage ?? ""*/
+                                    ),
                               ),
                             ),
                             const SizedBox(
                               width: 10,
                             ),
                             Text(
-                              nav
-                                  ? property?.propertyName ?? ""
-                                  : agent?.propertyOwnerName ?? "",
+                              users?.userName ?? "",
+                              /* nav
+                                  ? property?.propertyOwnerName ?? ""
+                                  : agent?.propertyOwnerName ?? ""*/
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall
@@ -229,90 +239,126 @@ class ChatScreen extends HookConsumerWidget {
 
                           // print('alldata $agentAllData');
 
-                          return allData.isEmpty
+                          return (nav ? allData.isEmpty : data.isEmpty)
                               ? const SizedBox()
                               : ListView.builder(
                                   reverse: true,
                                   itemCount: allData.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    final Message chat =
-                                        nav ? allData[index] : data[index];
+                                    final Message chat = allData[index];
+                                    final bool sentBy = chat.sendBy == user;
 
-                                    return (nav
-                                            ? allData.isEmpty
-                                            : allData.isEmpty)
+                                    return (allData.isEmpty)
                                         ? const SizedBox()
-                                        : chat.sendBy == user
-                                            ? Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: Container(
+                                        : Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Align(
+                                              alignment: sentBy
+                                                  ? Alignment.topRight
+                                                  : Alignment.topLeft,
+                                              child: Column(
+                                                children: [
+                                                  Container(
                                                     width: 250,
                                                     decoration: BoxDecoration(
-                                                      gradient: gradient(),
-                                                      borderRadius:
-                                                          const BorderRadius
+                                                      color: sentBy
+                                                          ? null
+                                                          : Colors.white38,
+                                                      gradient: sentBy
+                                                          ? gradient()
+                                                          : null,
+                                                      borderRadius: sentBy
+                                                          ? const BorderRadius
                                                               .only(
-                                                        topLeft:
-                                                            Radius.circular(10),
-                                                        bottomLeft:
-                                                            Radius.circular(10),
-                                                        bottomRight:
-                                                            Radius.circular(15),
-                                                      ),
+                                                              topLeft: Radius
+                                                                  .circular(10),
+                                                              bottomLeft: Radius
+                                                                  .circular(10),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          15),
+                                                            )
+                                                          : const BorderRadius
+                                                              .only(
+                                                              topLeft: Radius
+                                                                  .circular(10),
+                                                              bottomLeft: Radius
+                                                                  .circular(10),
+                                                              bottomRight:
+                                                                  Radius
+                                                                      .circular(
+                                                                          15),
+                                                            ),
                                                     ),
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
                                                               10.0),
-                                                      child: Text(
-                                                        allData[index].message,
-                                                        style: const TextStyle(
-                                                          color: Colors.white,
-                                                        ),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        textBaseline:
+                                                            TextBaseline
+                                                                .ideographic,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              allData[index]
+                                                                  .message,
+                                                              style: TextStyle(
+                                                                color: sentBy
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Theme.of(
+                                                                            context)
+                                                                        .primaryColor,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: Text(
+                                                              ' ${DateFormat('hh:mm a').format(allData[index].timestamp)}',
+                                                              style: TextStyle(
+                                                                color: sentBy
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Theme.of(
+                                                                            context)
+                                                                        .primaryColor,
+                                                                fontSize: 10,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              )
-                                            : Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Align(
-                                                  alignment: Alignment.topLeft,
-                                                  child: Container(
-                                                    width: 250,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      color: Colors.white38,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(10),
-                                                        bottomLeft:
-                                                            Radius.circular(10),
-                                                        bottomRight:
-                                                            Radius.circular(15),
-                                                      ),
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              10.0),
-                                                      child: Text(
-                                                        chat.message,
-                                                        style: TextStyle(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor),
-                                                      ),
+                                                  const SizedBox(height: 5),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(
+                                                        left: sentBy
+                                                            ? 150.0
+                                                            : 0.0,
+                                                        right: sentBy
+                                                            ? 0.0
+                                                            : 150.0),
+                                                    child: Text(
+                                                      ' ${DateFormat('dd MMMM yyyy').format(allData[index].timestamp)}',
+                                                      style: const TextStyle(
+                                                          // color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold),
                                                     ),
                                                   ),
-                                                ),
-                                              );
+                                                ],
+                                              ),
+                                            ),
+                                          );
                                   },
                                 );
                         },
@@ -325,7 +371,7 @@ class ChatScreen extends HookConsumerWidget {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
               child: SizedBox(
                 width: context.width * 0.75,
-                height: 70,
+                height: 80,
                 child: TextField(
                   maxLines: 2,
                   controller: messageController,
@@ -350,11 +396,12 @@ class ChatScreen extends HookConsumerWidget {
                           PhosphorIcons.fill.paperPlaneTilt,
                           color: Colors.white,
                         ),
-                      ).onTap(() {
+                      ).onTap(() async {
                         final message = Message(
                           message: messageController.text,
                           sendBy: user ?? '',
-                          timestamp: DateTime.now(),
+                          timestamp: await NTP.now(),
+                          //Timestamp.now(),
                           propertyId: nav
                               ? property?.propertyId ?? ""
                               : agent?.propertyId ?? "",
@@ -366,15 +413,6 @@ class ChatScreen extends HookConsumerWidget {
                           roomId: nav
                               ? property?.propertyId ?? ""
                               : agent?.propertyId ?? "",
-                          // users: [
-                          //   user ?? '',
-                          //   nav
-                          //       ? property?.propertyOwnerId ?? "hello"
-                          //       : agent?.propertyOwnerId ?? "booo"
-                          //   // nav
-                          //   //     ? property?.propertyOwnerId ?? ''
-                          //   //     : agent!.propertyOwnerId,
-                          // ],
                           users: nav ? getRoo!.users : agentRoo!.users,
                         );
 
@@ -391,10 +429,7 @@ class ChatScreen extends HookConsumerWidget {
                                   lastMessage: messageController.text,
                                   lastMessageTime: DateTime.now(),
                                   users: nav ? getRoo!.users : agentRoo!.users,
-                                  // users: [
-                                  //   user ?? '',
-                                  //   agent?.propertyOwnerId ?? ""
-                                  // ],
+
                                   roomId: nav
                                       ? property?.propertyId ?? ""
                                       : agent?.propertyId ?? "",

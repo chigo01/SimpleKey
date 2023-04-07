@@ -5,6 +5,7 @@ import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/utils/async_widget.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/widgets/images_caches.dart';
+import 'package:simple_key/src/core/widgets/notfound.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/PropertyDetailedScreen.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/homeScreen.dart';
 import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';

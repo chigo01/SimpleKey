@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 extension ContextExtension on BuildContext {
@@ -51,6 +52,22 @@ extension Validation on String {
     }
     return 0;
   }
+
+  DateTime get toDate {
+    if (isNotEmpty) {
+      return DateTime.parse(this);
+    }
+    return DateTime.now();
+  }
+}
+
+extension TimeStampExtension on Timestamp {
+  DateTime get toDateTimeString =>
+      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+}
+
+extension FieldValueExtension on FieldValue {
+  String get convertToString => '$this';
 }
 
 extension NotNullExtension<T> on T? {

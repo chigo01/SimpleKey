@@ -192,6 +192,16 @@ class AgentProfile extends HookConsumerWidget {
                                         ),
                                   ),
                                 ),
+                                Text(
+                                  "Works : ${userId.companyName ?? ''}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                        fontSize: 13,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                )
                               ],
                             ),
                             const SizedBox(height: 10),

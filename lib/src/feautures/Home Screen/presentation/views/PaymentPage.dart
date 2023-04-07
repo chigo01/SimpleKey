@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_key/src/core/widget/menu_widget.dart';
 
-class Profile extends StatelessWidget {
-  const Profile({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        leading: const MenuWidget(),
-      ),
-    );
-  }
-}
-
 class Settings extends StatelessWidget {
   const Settings({Key? key}) : super(key: key);
 

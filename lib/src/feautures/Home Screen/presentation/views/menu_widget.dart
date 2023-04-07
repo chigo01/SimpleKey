@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage(
@@ -58,8 +57,8 @@ class MenuItem {
 List<MenuItem> menuItems = [
   MenuItem('Home', Icons.home),
   MenuItem('Post Property', Icons.home_work_sharp),
-  MenuItem('Profile', Icons.person),
   MenuItem('Messages', Icons.chat),
+  MenuItem('Profile', Icons.person),
   MenuItem("Notifications", Icons.notifications),
   MenuItem('Logout', Icons.logout),
 ];
