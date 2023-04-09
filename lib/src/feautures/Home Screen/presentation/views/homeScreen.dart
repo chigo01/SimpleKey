@@ -200,145 +200,195 @@ class _HomeScreenState extends State<HomeScreen> {
             final checks = ref.watch(check);
             final currentSelected = ref.watch(filterCurrentIndex);
             return Center(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: context.width / 2.5),
-                    child: Container(
-                      height: 4,
-                      width: 90,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ).onTap(() => panelController.close()),
-                  const Text(
-                    'Search Filter',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        fillColor: Colors.grey[200],
-                        filled: true,
-                        hintText: 'Search category or location',
-                        hintStyle: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        suffixIcon: Icon(Icons.search,
-                            color: Theme.of(context).primaryColor),
-                        border: OutlineInputBorder(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: context.width / 2.5),
+                      child: Container(
+                        height: 4,
+                        width: 90,
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ).onTap(() => {
+                          panelController.close(),
+                          ref
+                              .read(check.notifier)
+                              .update((state) => state = {}),
+                          ref
+                              .read(filterCurrentIndex.notifier)
+                              .update((state) => state = 0),
+                        }),
+                    const Text(
+                      'Search Filter',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          fillColor: Colors.grey[200],
+                          filled: true,
+                          hintText: 'Search category or location',
+                          hintStyle: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          suffixIcon: Icon(Icons.search,
+                              color: Theme.of(context).primaryColor),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'PRICE',
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'PRICE',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                              '${NumberFormat.currency(symbol: "₦ ", decimalDigits: 0).format(_currentRangeValues.start.round())} - ${NumberFormat.currency(symbol: "₦ ", decimalDigits: 0).format(_currentRangeValues.end.round())}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                              )),
+                          RangeSlider(
+                              values: _currentRangeValues,
+                              min: 200000,
+                              max: 100000000,
+                              divisions: 1000000,
+                              // labels: RangeLabels(
+                              //   _currentRangeValues.start.round().toString(),
+                              //   _currentRangeValues.end.round().toString(),
+                              // ),
+                              activeColor: Theme.of(context).primaryColor,
+                              inactiveColor: Colors.grey,
+                              onChanged: (value) {
+                                setState(() {
+                                  _currentRangeValues = value;
+                                });
+                              }),
+                        ],
+                      ),
+                    ),
+                    const Text(
+                      'PROPERTY TYPE',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 80,
+                      //color: Colors.red,
+                      child: Wrap(
+                        children: [
+                          for (var i = 0; i < propertyType.length; i++)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 100,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  // color: Theme.of(context).primaryColor,
+                                  gradient: gradient(),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      propertyType[i],
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    if (currentSelected == i ||
+                                        checks.any((element) =>
+                                            element == propertyType[i]))
+                                      PhosphorIcon(
+                                        PhosphorIcons.bold.check,
+                                        color: Colors.white,
+                                        size: 15,
+                                      )
+                                    else if (!checks
+                                            .contains(propertyType[i]) &&
+                                        currentSelected == i)
+                                      const SizedBox.shrink()
+                                  ],
+                                ),
+                              ).onTap(
+                                () {
+                                  if (checks.contains(propertyType[i]) ||
+                                      currentSelected == i) {
+                                    //  checks.remove(propertyType[i]);
+                                    ref.read(check.notifier).update(
+                                          (state) => state
+                                              .where(
+                                                (element) =>
+                                                    element != propertyType[i],
+                                              )
+                                              .toSet(),
+                                        );
+                                  } else {
+                                    // checks.add(propertyType[i]);
+                                    ref.read(check.notifier).update(
+                                          (state) => state = {
+                                            ...checks,
+                                            propertyType[i],
+                                          },
+                                        );
+                                  }
+
+                                  ref
+                                      .read(filterCurrentIndex.notifier)
+                                      .update((state) => state = i);
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Container(
+                      height: 50,
+                      width: context.width * 0.5,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        //gradient: gradient(),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Apply Filter',
                           style: TextStyle(
-                            fontSize: 15,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                            '${NumberFormat.currency(symbol: "₦ ", decimalDigits: 0).format(_currentRangeValues.start.round())} - ${NumberFormat.currency(symbol: "₦ ", decimalDigits: 0).format(_currentRangeValues.end.round())}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            )),
-                        RangeSlider(
-                            values: _currentRangeValues,
-                            min: 200000,
-                            max: 100000000,
-                            divisions: 1000000,
-                            // labels: RangeLabels(
-                            //   _currentRangeValues.start.round().toString(),
-                            //   _currentRangeValues.end.round().toString(),
-                            // ),
-                            activeColor: Theme.of(context).primaryColor,
-                            inactiveColor: Colors.grey,
-                            onChanged: (value) {
-                              setState(() {
-                                _currentRangeValues = value;
-                              });
-                            }),
-                      ],
-                    ),
-                  ),
-                  const Text(
-                    'PROPERTY TYPE',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 80,
-                    //color: Colors.red,
-                    child: Wrap(
-                      children: [
-                        for (var i = 0; i < propertyType.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 100,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                //color: Theme.of(context).primaryColor,
-                                gradient: gradient(),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    propertyType[i],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  if (currentSelected == i ||
-                                      checks.any((element) =>
-                                          element == propertyType[i]))
-                                    PhosphorIcon(
-                                      PhosphorIcons.bold.check,
-                                      color: Colors.white,
-                                      size: 15,
-                                    ),
-                                ],
-                              ),
-                            ).onTap(
-                              () {
-                                if (checks.contains(propertyType[i])) {
-                                  checks.remove(propertyType[i]);
-                                } else {
-                                  checks.add(propertyType[i]);
-                                }
-
-                                ref
-                                    .read(filterCurrentIndex.notifier)
-                                    .update((state) => state = i);
-                              },
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    ).onTap(() {
+                      panelController.close();
+                    }),
+                  ],
+                ),
               ),
             );
           }),

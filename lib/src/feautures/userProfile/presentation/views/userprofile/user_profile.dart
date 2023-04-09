@@ -64,131 +64,168 @@ class Profile extends HookConsumerWidget {
                       const SizedBox(width: 10),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              users?.userName ?? "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              users?.email ?? "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: primary),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              users?.phone ?? "",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: primary),
-                            ),
-                            const SizedBox(height: 5),
-                            Expanded(
-                              child: Container(
-                                height: 50,
-                                width: 150,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white.withOpacity(0.2),
-                                ),
-                                child: Column(
-                                  children: [
-                                    const Text(
-                                      'Profile Type',
-                                      style: TextStyle(
+                        child: SizedBox(
+                          height: context.height * 0.9,
+                          width: context.width * 0.5,
+
+                          ///   color: Colors.white,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  users?.userName ?? "",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
                                         fontSize: 10,
                                       ),
-                                    ),
-                                    Text(
-                                      users?.userRole ?? "",
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ),
-                            )
-                          ],
+                              const SizedBox(height: 10),
+                              Expanded(
+                                child: Text(
+                                  users?.email ?? "",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: primary,
+                                        fontSize: 10,
+                                      ),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                users?.phone ?? "",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: primary, fontSize: 10),
+                              ),
+                              const SizedBox(height: 10),
+                              Expanded(
+                                flex: 2,
+                                child: Container(
+                                  height: 70,
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.white.withOpacity(0.2),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Profile Type',
+                                          style: TextStyle(
+                                            fontSize:
+                                                context.height > 700 ? 10 : 7,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          users?.userRole ?? "",
+                                          style: TextStyle(
+                                            fontSize:
+                                                context.height > 700 ? 15 : 9,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(
-                height: context.height * 0.58,
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: propertyType.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            final bool isSelected =
-                                ref.watch(currentIndex) == index;
-                            return SizedBox(
-                              height: 70,
-                              width: 70,
-                              // color: Colors.red,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 50.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      propertyType[index],
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall
-                                          ?.copyWith(
-                                              color:
-                                                  isSelected ? primary : null,
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    if (isSelected)
-                                      Container(
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: primary,
-                                        ),
-                                      )
-                                  ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: context.height * 0.5,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: propertyType.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              final bool isSelected =
+                                  ref.watch(currentIndex) == index;
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: context.height > 800 ? 40.0 : 20,
                                 ),
-                              ).onTap(() => ref
-                                  .read(currentIndex.notifier)
-                                  .state = index),
-                            );
-                          }),
-                    ),
-                    Expanded(
-                        flex: 5,
-                        child: IndexedStack(
-                          index: ref.watch(currentIndex),
-                          children: const [
-                            TabBody(),
-                            TabBody(),
-                            TabBody(),
-                            TabBody(),
-                            TabBody(),
-                            TabBody(),
-                          ],
-                        ))
-                  ],
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 70,
+                                  // color: Colors.red,
+                                  child: Column(
+                                    children: [
+                                      const SizedBox(height: 40),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                          propertyType[index],
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall
+                                              ?.copyWith(
+                                                  fontSize: 10,
+                                                  color: isSelected
+                                                      ? primary
+                                                      : null,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      if (isSelected)
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            height: 2,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: primary,
+                                            ),
+                                          ),
+                                        )
+                                    ],
+                                  ).onTap(() => ref
+                                      .read(currentIndex.notifier)
+                                      .state = index),
+                                ),
+                              );
+                            }),
+                      ),
+                      Expanded(
+                          flex: 3,
+                          child: IndexedStack(
+                            index: ref.watch(currentIndex),
+                            children: const [
+                              TabBody(),
+                              TabBody(),
+                              TabBody(),
+                              TabBody(),
+                              TabBody(),
+                              TabBody(),
+                            ],
+                          ))
+                    ],
+                  ),
                 ),
               )
             ],
