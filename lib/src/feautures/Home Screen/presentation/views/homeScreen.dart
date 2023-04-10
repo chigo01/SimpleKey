@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:simple_key/src/core/route/route_navigation.dart';
 
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/constants.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/widget/menu_widget.dart';
+import 'package:simple_key/src/feautures/Home%20Screen/presentation/filter_result.dart';
+import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
 
 import 'package:simple_key/src/feautures/userProfile/data/controller/providers/providers.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -29,12 +32,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  RangeValues _currentRangeValues = const RangeValues(200000, 1000000);
+  RangeValues _currentRangeValues = const RangeValues(305000, 1000000);
+  TextEditingController filterSearch = TextEditingController();
+  String search = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    filterSearch.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final panelController = PanelController();
     return Scaffold(
-      //  resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Consumer(
             builder: (BuildContext context, WidgetRef ref, Widget? child) {
@@ -69,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // final propertiesValues = ref
           //     .watch(getPropertyByCategory.notifier)
           //     .getPropertyByCategory('House');
+
           return Column(
             children: [
               Padding(
@@ -199,6 +217,23 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (BuildContext context, WidgetRef ref, Widget? child) {
             final checks = ref.watch(check);
             final currentSelected = ref.watch(filterCurrentIndex);
+
+            final allProperty = ref.watch(getAllProperty).valueOrNull;
+
+            final filterByCategory = allProperty?.where((element) {
+              return checks.any((value) => value == element.propertyType) &&
+                  element.propertyPrice >= _currentRangeValues.start &&
+                  element.propertyPrice <= _currentRangeValues.end &&
+                  element.propertyLocation.toUpperCase().contains(
+                        search.toUpperCase(),
+                      );
+            }).toList();
+            // .toList()
+            // .where((e) => e.propertyLocation
+            //     .toUpperCase()
+            //     .contains(search.toUpperCase()))
+            // .toList();
+
             return Center(
               child: SingleChildScrollView(
                 child: Column(
@@ -234,6 +269,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: TextField(
+                        controller: filterSearch,
+                        onChanged: (value) {
+                          setState(() {
+                            search = value;
+                          });
+                        },
                         decoration: InputDecoration(
                           fillColor: Colors.grey[200],
                           filled: true,
@@ -270,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               )),
                           RangeSlider(
                               values: _currentRangeValues,
-                              min: 200000,
+                              min: 100000,
                               max: 100000000,
                               divisions: 1000000,
                               // labels: RangeLabels(
@@ -375,18 +416,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         //gradient: gradient(),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'Apply Filter',
-                          style: TextStyle(
+                          filterByCategory!.isNotEmpty
+                              ? 'View ${filterByCategory.length} Results'
+                              : "No Results", //  'Apply Filter',
+                          style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                    ).onTap(() {
-                      panelController.close();
-                    }),
+                    ).onTap(filterByCategory.isNotEmpty
+                        ? () {
+                            context.push(FilterResult(
+                                categoryProperty: filterByCategory));
+                            panelController.close();
+                          }
+                        : () {}),
                   ],
                 ),
               ),

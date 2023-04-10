@@ -154,7 +154,7 @@ class Profile extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
-                  height: context.height * 0.5,
+                  height: context.height * 0.54,
                   child: Column(
                     children: [
                       Expanded(

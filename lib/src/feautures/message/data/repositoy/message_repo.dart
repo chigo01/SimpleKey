@@ -56,7 +56,7 @@ class MessageRepository {
     }
   }
 
-  Stream<List<Message>> getSubcollectionStream() {
+  Stream<List<Message>> getSubCollectionStream() {
     final snapshots = FirebaseFirestore.instance
         .collectionGroup(FirebaseConstants.chatsCollection)
         // .orderBy('timestamp', descending: true)

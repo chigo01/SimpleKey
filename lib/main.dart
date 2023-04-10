@@ -24,7 +24,7 @@ void main() async {
 
   runApp(
       //const MyApp()
-      const ProviderScope(
+      ProviderScope(
     // child: DevicePreview(
     //   enabled: !kReleaseMode,
     //   builder: (context) => const MyApp(),

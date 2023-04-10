@@ -5,7 +5,6 @@ import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/widget/menu_widget.dart';
 import 'package:simple_key/src/core/widgets/images_caches.dart';
-import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/PropertyDetailedScreen.dart';
 import 'package:simple_key/src/feautures/message/data/provider/message.dart';
 import 'package:simple_key/src/feautures/message/presentation/views/chat_screen.dart';
 import 'package:simple_key/src/feautures/propertyPost/data/controller/provider/property_repo.dart';
@@ -15,11 +14,8 @@ class MessagePreview extends HookConsumerWidget {
   const MessagePreview({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List newWChats = [];
-    List newMessages = [];
-    final propery = ref.watch(agentProperties);
     final currentUser = ref.watch(firebaseAuthProvider).currentUser?.uid;
-    final message = ref.watch(getSubcollectionStream).valueOrNull;
+    final message = ref.watch(getSubCollectionStream).valueOrNull;
 
     final chats = ref
         .watch(getSubCollectionRooms)
@@ -27,7 +23,9 @@ class MessagePreview extends HookConsumerWidget {
         ?.where((element) => element.users.contains(currentUser))
         .toList();
 
-    // print('Propeerty ${property?.propertyName}');
+    chats?.sort(((a, b) => a.lastMessageTime.compareTo(b.lastMessageTime)));
+
+    final chat = chats?.reversed.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -41,20 +39,16 @@ class MessagePreview extends HookConsumerWidget {
         leading: const MenuWidget(),
       ),
       body: ListView.builder(
-          itemCount: chats
+          itemCount: chat
               ?.length, //newWChats.length, //allUserReceivedMessage?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
-            final room = chats?[index];
+            final room = chat?[index];
             final user =
                 room?.users.firstWhere((element) => element != currentUser);
             final property =
                 ref.watch(getProperty(room?.roomId ?? "")).valueOrNull;
 
             final users = ref.watch(getAllUser(user ?? "")).valueOrNull;
-
-            print('user $user');
-            print(currentUser);
-            print('property${property?.propertyName}');
 
             // final user = ref.watch(getAllUser(room?.users.first));
             return Padding(

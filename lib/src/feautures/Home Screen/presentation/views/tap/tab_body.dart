@@ -47,416 +47,426 @@ class TabBody extends StatelessWidget {
                 property.propertyLocation.trim().split(',').contains(element),
           );
         }).toList();
-        return SizedBox(
-          height: context.height * 0.82,
-          width: context.width,
-          // color: Colors.red,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Recently Posted',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
+        return SingleChildScrollView(
+          child: SizedBox(
+            height: context.height * 0.67,
+            width: context.width,
+            // color: Colors.red,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Recently Posted',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.pushTransition(
-                          ALLProperty(
-                            category: category,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'View all',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      TextButton(
+                        onPressed: () {
+                          context.push(
+                            ALLProperty(
+                              category: category,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'View all',
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              AsyncWidget(
-                  asyncValue: propertiesValues,
-                  data: (properties) => Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                      child: SizedBox(
-                        height: context.height * 0.38,
-                        width: context.width,
-                        child: properties.isEmpty
-                            ? NotFoundWidget(
-                                getNotFound:
-                                    '${ref.watch(categoryName)} properties have not been posted yet ')
-                            : ListView.builder(
-                                itemCount: properties.length,
-                                scrollDirection: Axis.horizontal,
-                                physics: const BouncingScrollPhysics(),
-                                itemBuilder: (BuildContext context, int index) {
-                                  final element = properties[index];
-                                  String getCircularItems(int indexAt) {
-                                    return {
-                                          0: "${element.numberOfRooms}",
-                                          1: "${element.numberOfBathrooms}",
-                                          2: "${element.meters} sqft",
-                                        }[indexAt] ??
-                                        '';
-                                  }
+                AsyncWidget(
+                    asyncValue: propertiesValues,
+                    data: (properties) => Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                        child: SizedBox(
+                          height: context.height * 0.38,
+                          width: context.width,
+                          child: properties.isEmpty
+                              ? NotFoundWidget(
+                                  getNotFound:
+                                      '${ref.watch(categoryName)} properties have not been posted yet ')
+                              : ListView.builder(
+                                  itemCount: properties.length,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final element = properties[index];
+                                    String getCircularItems(int indexAt) {
+                                      return {
+                                            0: "${element.numberOfRooms}",
+                                            1: "${element.numberOfBathrooms}",
+                                            2: "${element.meters} sqft",
+                                          }[indexAt] ??
+                                          '';
+                                    }
 
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      height: 240,
-                                      width: 280,
-                                      //color: Colors.white,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.white,
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
-                                        child: Column(
-                                          children: [
-                                            Expanded(
-                                              flex: 4,
-                                              child: SizedBox(
-                                                height: 200,
-                                                width: 280,
-                                                // color: Colors.blue,
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Container(
+                                        height: 240,
+                                        width: 280,
+                                        //color: Colors.white,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          color: Colors.white,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Column(
+                                            children: [
+                                              Expanded(
+                                                flex: 4,
+                                                child: SizedBox(
+                                                  height: 200,
+                                                  width: 280,
+                                                  // color: Colors.blue,
 
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Stack(
-                                                    children: [
-                                                      ImageCaches(
-                                                        imageUrl: element
-                                                            .propertyImages[0],
-                                                      ),
-                                                      Positioned(
-                                                        left: 10,
-                                                        top: 30,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(50.0),
-                                                          child: Container(
-                                                            height: 60,
-                                                            width: 150,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: const Color(
-                                                                      0xff857b83)
-                                                                  .withOpacity(
-                                                                      0.8),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                const Spacer(),
-                                                                const Text(
-                                                                  "Price",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    child: Stack(
+                                                      children: [
+                                                        ImageCaches(
+                                                          imageUrl: element
+                                                              .propertyImages[0],
+                                                        ),
+                                                        Positioned(
+                                                          left: 10,
+                                                          top: 30,
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(50.0),
+                                                            child: Container(
+                                                              height: 60,
+                                                              width: 150,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: const Color(
+                                                                        0xff857b83)
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
+                                                              ),
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  const Spacer(),
+                                                                  const Text(
+                                                                    "Price",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                const Spacer(),
-                                                                Text(
-                                                                  NumberFormat.currency(
-                                                                          symbol:
-                                                                              "₦ ",
-                                                                          decimalDigits:
-                                                                              0)
-                                                                      .format(element
-                                                                          .propertyPrice),
+                                                                  const Spacer(),
+                                                                  Text(
+                                                                    NumberFormat.currency(
+                                                                            symbol:
+                                                                                "₦ ",
+                                                                            decimalDigits:
+                                                                                0)
+                                                                        .format(
+                                                                            element.propertyPrice),
 
-                                                                  // "\$${properties[index].propertyPrice}",
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12,
+                                                                    // "\$${properties[index].propertyPrice}",
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                const Spacer(),
-                                                              ],
+                                                                  const Spacer(),
+                                                                ],
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              flex: 2,
-                                              child: SizedBox(
-                                                height: 40,
-                                                width: 280,
-                                                //color: Colors.red,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
+                                              Expanded(
+                                                flex: 2,
+                                                child: SizedBox(
+                                                  height: 40,
+                                                  width: 280,
+                                                  //color: Colors.red,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                            properties[index]
+                                                                .propertyName,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .titleLarge
+                                                                ?.copyWith(
+                                                                    fontSize:
+                                                                        13)),
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        Text(
                                                           properties[index]
-                                                              .propertyName,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .titleLarge
-                                                                  ?.copyWith(
-                                                                      fontSize:
-                                                                          13)),
-                                                      const SizedBox(height: 5),
-                                                      Text(
-                                                        properties[index]
-                                                            .propertyLocation,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .labelMedium
-                                                            ?.copyWith(
-                                                              fontSize: 13,
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                      ),
-                                                      const SizedBox(height: 5),
-                                                      SizedBox(
-                                                        height: 30,
-                                                        width: double.infinity,
-                                                        child: ListView.builder(
-                                                          itemCount: 3,
-                                                          shrinkWrap: true,
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemBuilder: (context,
-                                                              element) {
-                                                            return Row(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    CircleAvatar(
-                                                                      radius:
-                                                                          15,
-                                                                      backgroundColor: Theme.of(
-                                                                              context)
-                                                                          .primaryColor
-                                                                          .withOpacity(
-                                                                              0.3),
-                                                                      child: Icon(
-                                                                          icon[
-                                                                              element],
-                                                                          color: Theme.of(context)
-                                                                              .primaryColor,
-                                                                          size:
-                                                                              15),
-                                                                    ),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            5),
-                                                                    Padding(
-                                                                      padding:
-                                                                          const EdgeInsets.all(
-                                                                              8.0),
-                                                                      child:
-                                                                          Text(
-                                                                        getCircularItems(
-                                                                            element),
-                                                                        style: Theme.of(context)
-                                                                            .textTheme
-                                                                            .labelMedium
-                                                                            ?.copyWith(
-                                                                              fontSize: 13,
-                                                                              color: Theme.of(context).primaryColor,
-                                                                            ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            );
-                                                          },
+                                                              .propertyLocation,
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .labelMedium
+                                                              ?.copyWith(
+                                                                fontSize: 13,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                        const SizedBox(
+                                                            height: 5),
+                                                        SizedBox(
+                                                          height: 30,
+                                                          width:
+                                                              double.infinity,
+                                                          child:
+                                                              ListView.builder(
+                                                            itemCount: 3,
+                                                            shrinkWrap: true,
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    element) {
+                                                              return Row(
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      CircleAvatar(
+                                                                        radius:
+                                                                            15,
+                                                                        backgroundColor: Theme.of(context)
+                                                                            .primaryColor
+                                                                            .withOpacity(0.3),
+                                                                        child: Icon(
+                                                                            icon[
+                                                                                element],
+                                                                            color:
+                                                                                Theme.of(context).primaryColor,
+                                                                            size: 15),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          width:
+                                                                              5),
+                                                                      Padding(
+                                                                        padding:
+                                                                            const EdgeInsets.all(8.0),
+                                                                        child:
+                                                                            Text(
+                                                                          getCircularItems(
+                                                                              element),
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .labelMedium
+                                                                              ?.copyWith(
+                                                                                fontSize: 13,
+                                                                                color: Theme.of(context).primaryColor,
+                                                                              ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ).onTap(
-                                    () => context.pushTransition(
-                                      PropertyDetailsScreen(
-                                          agentProperty: element),
-                                    ),
-                                  );
-                                },
-                              ),
-                      ))),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Nearby',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        context.pushTransition(
-                          ALLNearbyProperty(
-                            category: category,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'View all',
-                        style: TextStyle(color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: SizedBox(
-                    height: 220,
-                    width: context.width,
-                    child: nearby?.isEmpty ?? true
-                        ? const NotFoundWidget(
-                            getNotFound: 'No nearby properties found')
-                        : ListView.builder(
-                            itemCount: nearby?.length,
-                            physics: const BouncingScrollPhysics(),
-                            itemBuilder: (BuildContext context, int index) {
-                              final element = nearby?[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 100, // context.height * 0.15,
-                                  width: context.width,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          height: context.height * 0.15,
-                                          width: context.width * 0.3,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: ImageCaches(
-                                                imageUrl: element
-                                                        ?.propertyImages[0] ??
-                                                    ''),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, top: 17, bottom: 8),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                element?.propertyName ?? '',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge
-                                                    ?.copyWith(
-                                                      fontSize: 16,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 5),
-                                              Text(
-                                                element?.propertyLocation ?? '',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .labelMedium
-                                                    ?.copyWith(
-                                                      fontSize: 13,
-                                                      color: Colors.grey,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Text(
-                                                NumberFormat.currency(
-                                                        symbol: "₦ ",
-                                                        decimalDigits: 0)
-                                                    .format(
-                                                        element?.propertyPrice),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      fontSize: 15,
-                                                      color: Theme.of(
-                                                        context,
-                                                      ).primaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
                                               ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ).onTap(
+                                      () => context.push(
+                                        PropertyDetailsScreen(
+                                            agentProperty: element),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ))),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Nearby',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.push(
+                            ALLNearbyProperty(
+                              category: category,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'View all',
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: SizedBox(
+                      height: 220,
+                      width: context.width,
+                      child: nearby?.isEmpty ?? true
+                          ? const NotFoundWidget(
+                              getNotFound: 'No nearby properties found')
+                          : ListView.builder(
+                              itemCount: nearby?.length,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (BuildContext context, int index) {
+                                final element = nearby?[index];
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    height: 100, // context.height * 0.15,
+                                    width: context.width,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            height: context.height * 0.15,
+                                            width: context.width * 0.3,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: ImageCaches(
+                                                  imageUrl: element
+                                                          ?.propertyImages[0] ??
+                                                      ''),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 17, bottom: 8),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  element?.propertyName ?? '',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge
+                                                      ?.copyWith(
+                                                        fontSize: 16,
+                                                      ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  element?.propertyLocation ??
+                                                      '',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .labelMedium
+                                                      ?.copyWith(
+                                                        fontSize: 13,
+                                                        color: Colors.grey,
+                                                      ),
+                                                ),
+                                                const SizedBox(height: 10),
+                                                Text(
+                                                  NumberFormat.currency(
+                                                          symbol: "₦ ",
+                                                          decimalDigits: 0)
+                                                      .format(element
+                                                          ?.propertyPrice),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        fontSize: 15,
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ).onTap(
-                                () => context.pushTransition(
-                                  PropertyDetailsScreen(
-                                      agentProperty: element!),
-                                ),
-                              );
-                            },
-                          )
+                                ).onTap(
+                                  () => context.push(
+                                    PropertyDetailsScreen(
+                                        agentProperty: element!),
+                                  ),
+                                );
+                              },
+                            )
 
-                    // color: Colors.blue,
-                    ),
-              ),
-            ],
+                      // color: Colors.blue,
+                      ),
+                ),
+              ],
+            ),
           ),
         );
       },

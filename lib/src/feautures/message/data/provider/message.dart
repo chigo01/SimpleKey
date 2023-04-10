@@ -32,8 +32,8 @@ final getRoom = StreamProvider.family<Room, String>((ref, roomId) async* {
   yield* ref.watch(messageRepository).getRoom(roomId);
 });
 
-final getSubcollectionStream = StreamProvider((ref) async* {
-  yield* ref.watch(messageRepository).getSubcollectionStream();
+final getSubCollectionStream = StreamProvider((ref) async* {
+  yield* ref.watch(messageRepository).getSubCollectionStream();
 });
 
 final getSubCollectionRoom =

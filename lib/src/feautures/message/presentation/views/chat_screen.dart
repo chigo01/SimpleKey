@@ -47,7 +47,7 @@ class ChatScreen extends HookConsumerWidget {
 
     final users = ref.watch(getAllUser(user ?? "")).valueOrNull;
 
-    final message = ref.watch(getSubcollectionStream);
+    final message = ref.watch(getSubCollectionStream);
 
     final agentFilterRoom = agentRoom.valueOrNull
         ?.where((element) =>
