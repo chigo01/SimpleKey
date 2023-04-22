@@ -146,8 +146,9 @@ class MessagePreview extends HookConsumerWidget {
               () => context.pushTransition(
                 ChatScreen(
                   // agent: agent!,
-                  id: room?.roomId ?? "",
-                  nav: true,
+                  id: room?.id ?? "",
+                  //  nav: true,
+                  // roomId: room?.roomId ?? "",
                 ),
               ),
             );

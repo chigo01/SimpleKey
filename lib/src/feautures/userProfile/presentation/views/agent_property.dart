@@ -192,15 +192,17 @@ class AgentProfile extends HookConsumerWidget {
                                         ),
                                   ),
                                 ),
-                                Text(
-                                  "Works : ${userId.companyName ?? ''}",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium
-                                      ?.copyWith(
-                                        fontSize: 13,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
+                                Expanded(
+                                  child: Text(
+                                    "Works : ${userId.companyName ?? ''}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium
+                                        ?.copyWith(
+                                          fontSize: 13,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                  ),
                                 )
                               ],
                             ),
@@ -247,8 +249,9 @@ class AgentProfile extends HookConsumerWidget {
                                 ).onTap(() {
                                   context.pushTransition(
                                     ChatScreen(
-                                      agent: agent,
-                                      nav: false,
+                                      // agent: agent,
+                                      //      nav: false,
+                                      id: '${agent.propertyId}-$currentUser-${agent.propertyOwnerId}',
                                     ),
                                   );
 
@@ -256,15 +259,20 @@ class AgentProfile extends HookConsumerWidget {
                                     lastMessage: '',
                                     lastMessageTime: DateTime.now(),
                                     roomId: agent.propertyId,
+                                    // '${agent.propertyId}-$currentUser-${agent.propertyOwnerId}',
                                     users: [
                                       currentUser!,
                                       agent.propertyOwnerId
                                     ],
+                                    id: '${agent.propertyId}-$currentUser-${agent.propertyOwnerId}',
                                     // agent: agent,
                                   );
                                   ref
                                       .read(messageRepositoryProvider.notifier)
-                                      .createRoom(agent.propertyId, room);
+                                      .createRoom(
+                                        '${agent.propertyId}-$currentUser-${agent.propertyOwnerId}',
+                                        room,
+                                      );
                                 }),
                               ),
                           ],

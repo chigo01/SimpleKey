@@ -61,14 +61,9 @@ extension Validation on String {
   }
 }
 
-extension TimeStampExtension on Timestamp {
-  DateTime get toDateTimeString =>
-      DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
-}
-
-extension FieldValueExtension on FieldValue {
-  String get convertToString => '$this';
-}
+// extension FieldValueExtension on FieldValue {
+//   String get convertToString => '$this';
+// }
 
 extension NotNullExtension<T> on T? {
   bool get isNotNull => this != null;

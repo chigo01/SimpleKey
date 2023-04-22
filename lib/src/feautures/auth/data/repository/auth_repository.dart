@@ -11,6 +11,7 @@ import 'package:simple_key/src/core/providers/auth_providers.dart';
 import 'package:simple_key/src/core/utils/cam.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/core/utils/typedef.dart';
+import 'package:simple_key/src/feautures/auth/model/authmodel.dart';
 import 'package:simple_key/src/model/users_model.dart';
 import 'package:path/path.dart' as path;
 
@@ -61,10 +62,31 @@ class AuthRepository {
 
       await _users.doc(userCredentials.user!.uid).set(userModel.toMap());
       return right(userModel);
-    } on FirebaseException catch (e) {
+    } on FirebaseAuthException catch (e) {
       return left(
         Failure(
-          catchFirebaseEmailError(e.toString()),
+          catchFirebaseEmailError(e.code),
+        ),
+      );
+    }
+  }
+
+  FutureEither<void> signInWithEmailAndPassword(
+    String email,
+    String password,
+    WidgetRef ref,
+  ) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      return right(print);
+    } on FirebaseAuthException catch (e) {
+      return Left(
+        Failure(
+          catchSignInError(e.code),
         ),
       );
     }
@@ -97,10 +119,10 @@ class AuthRepository {
         await _users.add(userModel.toMap());
       }
       return right(userModel);
-    } on FirebaseException catch (e) {
+    } on FirebaseAuthException catch (e) {
       return left(
         Failure(
-          catchFirebaseGoogleSignInError(e.toString()),
+          catchFirebaseGoogleSignInError(e.code),
         ),
       );
     }
@@ -123,6 +145,19 @@ class AuthRepository {
     }
     return newImage ?? "";
   }
+
+  Future<void> signOut() async {
+    try {
+      Future.wait(
+        [
+          GoogleSignIn().signOut(),
+          _auth.signOut(),
+        ],
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
 String catchFirebaseEmailError(String failure) {
@@ -135,6 +170,21 @@ String catchFirebaseEmailError(String failure) {
       return 'Password sign-in is disabled for this project.';
     case 'weak-password':
       return 'The password must be 6 characters long or more.';
+    default:
+      return 'Something went wrong';
+  }
+}
+
+String catchSignInError(String failure) {
+  switch (failure) {
+    case 'invalid-email':
+      return 'The email address is badly formatted.';
+    case 'user-disabled':
+      return 'The user corresponding to the given email has been disabled.';
+    case 'user-not-found':
+      return 'No user found for that email.';
+    case 'wrong-password':
+      return 'Wrong password provided for that user.';
     default:
       return 'Something went wrong';
   }

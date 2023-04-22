@@ -4,6 +4,7 @@ import 'package:simple_key/src/core/route/route_navigation.dart';
 import 'package:simple_key/src/core/theme/color_pallter.dart';
 import 'package:simple_key/src/core/utils/extension.dart';
 import 'package:simple_key/src/feautures/auth/data/controller/provider/provider.dart';
+import 'package:simple_key/src/feautures/auth/signUps/login.dart';
 import 'package:simple_key/src/feautures/auth/signUps/sign_up.dart';
 
 class SelectAuthType extends StatelessWidget {
@@ -21,9 +22,34 @@ class SelectAuthType extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
+          //  crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // const Spacer(),
             SizedBox(height: context.height * 0.02),
+            SizedBox(
+              child: Text.rich(
+                TextSpan(
+                  text: 'Do you have an account? ',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 45, 45, 45),
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "Login",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor, fontSize: 15),
+                    ),
+                  ],
+                ),
+              ).onTap(
+                () => context.push(
+                  const LoginScreen(),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
             const Text(
               "Select your profile type according to your needs, to sell your property or to buy a property",
               style: TextStyle(
@@ -31,7 +57,8 @@ class SelectAuthType extends StatelessWidget {
                 color: Color.fromARGB(255, 45, 45, 45),
               ),
             ),
-            SizedBox(height: context.height * 0.13),
+            SizedBox(height: context.height * 0.03),
+
             Expanded(
               flex: 2,
               child: Row(

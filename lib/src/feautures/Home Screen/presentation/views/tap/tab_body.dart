@@ -49,7 +49,7 @@ class TabBody extends StatelessWidget {
         }).toList();
         return SingleChildScrollView(
           child: SizedBox(
-            height: context.height * 0.67,
+            height: context.height * 0.7,
             width: context.width,
             // color: Colors.red,
             child: Column(

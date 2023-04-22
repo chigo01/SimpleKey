@@ -1,12 +1,11 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:simple_key/src/core/theme/theme.dart';
 import 'package:simple_key/src/feautures/Home%20Screen/presentation/views/app.dart';
-import 'package:simple_key/src/feautures/auth/choice.dart';
+import 'package:simple_key/src/feautures/auth/signUps/login.dart';
 import 'package:stack_trace/stack_trace.dart' as stack_trace;
 
 import 'firebase_options.dart';
@@ -24,7 +23,7 @@ void main() async {
 
   runApp(
       //const MyApp()
-      ProviderScope(
+      const ProviderScope(
     // child: DevicePreview(
     //   enabled: !kReleaseMode,
     //   builder: (context) => const MyApp(),
@@ -36,7 +35,10 @@ void main() async {
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
   @override
   Widget buildOverscrollIndicator(
-      BuildContext context, Widget child, ScrollableDetails details) {
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
     return child;
   }
 }
@@ -89,7 +91,7 @@ class _AuthStateListenerState extends State<AuthStateListener> {
           User? user = snapshot.data;
           if (user == null) {
             // User is not logged in
-            return const SelectAuthType();
+            return const LoginScreen();
           } else {
             // User is logged in
             return const App();

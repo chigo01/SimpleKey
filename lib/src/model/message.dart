@@ -6,29 +6,32 @@ import 'package:flutter/foundation.dart';
 
 class Room {
   String lastMessage;
+
   DateTime lastMessageTime;
   String? roomId;
   List<String> users;
+  String id;
 
-  Room({
-    required this.lastMessage,
-    required this.lastMessageTime,
-    this.roomId,
-    required this.users,
-  });
+  Room(
+      {required this.lastMessage,
+      required this.lastMessageTime,
+      this.roomId,
+      required this.users,
+      required this.id});
 
   Room copyWith({
     String? lastMessage,
     DateTime? lastMessageTime,
     String? roomId,
     List<String>? users,
+    String? id,
   }) {
     return Room(
-      lastMessage: lastMessage ?? this.lastMessage,
-      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
-      roomId: roomId ?? this.roomId,
-      users: users ?? this.users,
-    );
+        lastMessage: lastMessage ?? this.lastMessage,
+        lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+        roomId: roomId ?? this.roomId,
+        users: users ?? this.users,
+        id: id ?? this.id);
   }
 
   Map<String, dynamic> toMap() {
@@ -37,17 +40,20 @@ class Room {
       'lastMessageTime': lastMessageTime,
       'roomId': roomId,
       'users': users,
+      'id': id,
     };
   }
 
   factory Room.fromMap(Map<String, dynamic> map) {
     return Room(
-        lastMessage: map['lastMessage'] as String,
-        lastMessageTime: (map['lastMessageTime'] as Timestamp).toDate(),
-        roomId: map['roomId'] as String,
-        users: List<String>.from(
-          (map['users'] as List<dynamic>),
-        ));
+      lastMessage: map['lastMessage'] as String,
+      lastMessageTime: (map['lastMessageTime'] as Timestamp).toDate(),
+      roomId: map['roomId'] as String,
+      users: List<String>.from(
+        (map['users'] as List<dynamic>),
+      ),
+      id: map['id'] as String,
+    );
   }
 
   String toJson() => json.encode(toMap());

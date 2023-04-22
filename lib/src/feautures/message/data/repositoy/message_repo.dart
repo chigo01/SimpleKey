@@ -105,13 +105,23 @@ class MessageRepository {
     );
   }
 
+  // Stream<Room> getRoom(String roomId) {
+  //   return _fireStore
+  //       .collectionGroup(FirebaseConstants.roomsCollection)
+  //       .where("roomId", isEqualTo: roomId)
+  //       .orderBy('lastMessageTime', descending: true)
+  //       .snapshots()
+  //       .map((event) => Room.fromMap(event.docs.first.data()));
+  // }
+
   Stream<Room> getRoom(String roomId) {
     return _fireStore
-        .collectionGroup(FirebaseConstants.roomsCollection)
-        .where("roomId", isEqualTo: roomId)
-        .orderBy('lastMessageTime', descending: true)
+        .collection(FirebaseConstants.roomsCollection)
+        .doc(roomId)
+        // .where("roomId", isEqualTo: roomId)
+        //  .orderBy('lastMessageTime', descending: true)
         .snapshots()
-        .map((event) => Room.fromMap(event.docs.first.data()));
+        .map((event) => Room.fromMap(event.data() as Map<String, dynamic>));
   }
 
   Stream<List<Message>> getChatMessagesForRoom(String roomId) {

@@ -196,18 +196,6 @@ class _HomeScreenState extends State<HomeScreen> {
           controller: panelController,
           minHeight: 0,
           maxHeight: context.height * 0.5,
-          // header: Padding(
-          //   padding: EdgeInsets.symmetric(
-          //       vertical: 20.0, horizontal: context.width / 2.5),
-          //   child: Container(
-          //     height: 4,
-          //     width: 90,
-          //     decoration: BoxDecoration(
-          //       borderRadius: BorderRadius.circular(10),
-          //       color: Colors.grey,
-          //     ),
-          //   ),
-          // ).onTap(() => panelController.close()),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(50),
             topRight: Radius.circular(50),
@@ -221,18 +209,15 @@ class _HomeScreenState extends State<HomeScreen> {
             final allProperty = ref.watch(getAllProperty).valueOrNull;
 
             final filterByCategory = allProperty?.where((element) {
-              return checks.any((value) => value == element.propertyType) &&
-                  element.propertyPrice >= _currentRangeValues.start &&
-                  element.propertyPrice <= _currentRangeValues.end &&
-                  element.propertyLocation.toUpperCase().contains(
-                        search.toUpperCase(),
-                      );
-            }).toList();
-            // .toList()
-            // .where((e) => e.propertyLocation
-            //     .toUpperCase()
-            //     .contains(search.toUpperCase()))
-            // .toList();
+                  return checks.any((value) => value == element.propertyType) &&
+                      element.propertyPrice >= _currentRangeValues.start &&
+                      element.propertyPrice <= _currentRangeValues.end &&
+                      element.propertyLocation.toUpperCase().contains(
+                            search.toUpperCase(),
+                          );
+                }).toList() ??
+                [];
+            bool isSelected = false;
 
             return Center(
               child: SingleChildScrollView(
@@ -314,10 +299,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               min: 100000,
                               max: 100000000,
                               divisions: 1000000,
-                              // labels: RangeLabels(
-                              //   _currentRangeValues.start.round().toString(),
-                              //   _currentRangeValues.end.round().toString(),
-                              // ),
                               activeColor: Theme.of(context).primaryColor,
                               inactiveColor: Colors.grey,
                               onChanged: (value) {
@@ -340,70 +321,64 @@ class _HomeScreenState extends State<HomeScreen> {
                       //color: Colors.red,
                       child: Wrap(
                         children: [
-                          for (var i = 0; i < propertyType.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 100,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  // color: Theme.of(context).primaryColor,
-                                  gradient: gradient(),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      propertyType[i],
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    if (currentSelected == i ||
-                                        checks.any((element) =>
-                                            element == propertyType[i]))
-                                      PhosphorIcon(
-                                        PhosphorIcons.bold.check,
-                                        color: Colors.white,
-                                        size: 15,
-                                      )
-                                    else if (!checks
-                                            .contains(propertyType[i]) &&
-                                        currentSelected == i)
-                                      const SizedBox.shrink()
-                                  ],
-                                ),
-                              ).onTap(
-                                () {
-                                  if (checks.contains(propertyType[i]) ||
-                                      currentSelected == i) {
-                                    //  checks.remove(propertyType[i]);
-                                    ref.read(check.notifier).update(
-                                          (state) => state
-                                              .where(
-                                                (element) =>
-                                                    element != propertyType[i],
-                                              )
-                                              .toSet(),
-                                        );
-                                  } else {
-                                    // checks.add(propertyType[i]);
-                                    ref.read(check.notifier).update(
-                                          (state) => state = {
-                                            ...checks,
-                                            propertyType[i],
-                                          },
-                                        );
-                                  }
+                          //  for (var i = 0; i < propertyType.length; i++)
 
-                                  ref
-                                      .read(filterCurrentIndex.notifier)
-                                      .update((state) => state = i);
-                                },
-                              ),
-                            ),
+                          ...propertyType.map(
+                            (type) {
+                              isSelected = checks.contains(type);
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: 100,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                    // color: Theme.of(context).primaryColor,
+                                    gradient: gradient(),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        type,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      isSelected
+                                          ? PhosphorIcon(
+                                              PhosphorIcons.bold.check,
+                                              color: Colors.white,
+                                              size: 15,
+                                            )
+                                          : const SizedBox.shrink()
+                                    ],
+                                  ),
+                                ).onTap(
+                                  () {
+                                    if (checks.contains(type)) {
+                                      isSelected = true;
+                                      ref.read(check.notifier).update(
+                                            (state) => state
+                                                .where(
+                                                  (element) => element != type,
+                                                )
+                                                .toSet(),
+                                          );
+                                    } else {
+                                      ref.read(check.notifier).update(
+                                            (state) => state = {
+                                              ...checks,
+                                              type,
+                                            },
+                                          );
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                          ).toList()
                         ],
                       ),
                     ),
@@ -418,7 +393,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          filterByCategory!.isNotEmpty
+                          filterByCategory.isNotEmpty
                               ? 'View ${filterByCategory.length} Results'
                               : "No Results", //  'Apply Filter',
                           style: const TextStyle(
@@ -429,8 +404,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ).onTap(filterByCategory.isNotEmpty
                         ? () {
-                            context.push(FilterResult(
-                                categoryProperty: filterByCategory));
+                            context.push(
+                              FilterResult(categoryProperty: filterByCategory),
+                            );
                             panelController.close();
                           }
                         : () {}),

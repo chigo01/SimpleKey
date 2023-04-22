@@ -230,44 +230,49 @@ class Profile extends HookConsumerWidget {
               )
             ],
           ),
-          Positioned(
-            top: context.height * 0.2,
-            left: context.width * 0.05,
-            child: Container(
-              height: context.height * 0.15,
-              width: context.width * 0.9,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'ABOUT ME',
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Center(
-                      child: Text(
-                        users?.description ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(fontSize: 15, color: primary, shadows: [
-                          const BoxShadow(color: Colors.black, blurRadius: 2)
-                        ]),
+          if (users?.userRole.toLowerCase() == 'agent')
+            Positioned(
+              top: context.height * 0.2,
+              left: context.width * 0.05,
+              child: Container(
+                height: context.height * 0.15,
+                width: context.width * 0.9,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      'ABOUT ME',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Center(
+                        child: Text(
+                          users?.description ?? "",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                  fontSize: 15,
+                                  color: primary,
+                                  shadows: [
+                                const BoxShadow(
+                                    color: Colors.black, blurRadius: 2)
+                              ]),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          )
+            )
         ],
       ),
     );

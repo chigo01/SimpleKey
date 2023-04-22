@@ -15,7 +15,7 @@ import 'package:simple_key/src/feautures/auth/data/controller/provider/provider.
 import 'package:simple_key/src/feautures/auth/presentation/widget/text_field.dart';
 import 'package:simple_key/src/model/users_model.dart';
 
-final obscureText = StateProvider<bool>((ref) => false);
+final _obscureText = StateProvider<bool>((ref) => false);
 
 class SignUpScreen extends HookConsumerWidget {
   const SignUpScreen({super.key, required this.isAgent});
@@ -32,7 +32,7 @@ class SignUpScreen extends HookConsumerWidget {
     final companyController = useTextEditingController();
     final aboutController = useTextEditingController();
     // final user = FirebaseAuth.instance.currentUser;
-    final passwordVisibility = ref.watch(obscureText);
+    final passwordVisibility = ref.watch(_obscureText);
     final authRepo = ref.watch(authNotifierProvider);
     final user = ref.watch(firebaseAuthProvider);
     final imagePicked = ref.watch(imagePath);
@@ -252,7 +252,7 @@ class SignUpScreen extends HookConsumerWidget {
                                       !passwordVisibility ? '.' : '◉',
                                   suffixIcon: IconButton(
                                     onPressed: () => ref
-                                        .read(obscureText.notifier)
+                                        .read(_obscureText.notifier)
                                         .update((state) => !state),
                                     icon: Icon(
                                       passwordVisibility
@@ -348,7 +348,7 @@ class SignUpScreen extends HookConsumerWidget {
                                         //color: Theme.of(context).primaryColor,
                                         gradient: gradient()),
                                     child: Center(
-                                      child: authRepo.isLoading
+                                      child: authRepo
                                           ? const Center(
                                               child: Spinner(size: 40),
                                             )
@@ -376,7 +376,7 @@ class SignUpScreen extends HookConsumerWidget {
                                         );
                                         ref
                                             .read(authNotifierProvider.notifier)
-                                            .signInWithEmailAndPassword(
+                                            .signUpWithEmailAndPassword(
                                               email: emailController.text,
                                               password: passwordController.text,
                                               userModel: userModel,

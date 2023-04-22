@@ -19,10 +19,13 @@ import 'package:simple_key/src/model/product_model.dart';
 final roomId = StateProvider<String>((ref) => '');
 
 class ChatScreen extends HookConsumerWidget {
-  const ChatScreen({super.key, this.agent, this.id, required this.nav});
-  final AgentProperty? agent;
+  const ChatScreen({
+    super.key,
+    // this.agent,
+    this.id,
+  });
+  // final AgentProperty? agent;
   final String? id;
-  final bool nav;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,41 +34,21 @@ class ChatScreen extends HookConsumerWidget {
     //  final User? user1;
 
     TextEditingController messageController = useTextEditingController();
-    final property = ref.watch(getProperty(id ?? "")).valueOrNull;
-    //  final id = ref.watch(roomId);
-    final agentRoom = ref.watch(
-      getSubCollectionRoom(
-        agent?.propertyId ?? "",
-      ),
-    );
-    final room = ref.watch(getSubCollectionRoom(property?.propertyId ?? ""));
-    final getRoo = ref.watch(getRoom(property?.propertyId ?? "")).valueOrNull;
-    final agentRoo = ref.watch(getRoom(agent?.propertyId ?? "")).valueOrNull;
-    final user = nav
-        ? getRoo?.users.firstWhere((element) => element != currentUser)
-        : agentRoo?.users.firstWhere((element) => element != currentUser);
+
+    final agentRoom = ref.watch(getRoom(id ?? "")).valueOrNull;
+    final property =
+        ref.watch(getProperty(agentRoom?.roomId ?? "")).valueOrNull;
+
+    final user =
+        agentRoom?.users.firstWhere((element) => element != currentUser);
 
     final users = ref.watch(getAllUser(user ?? "")).valueOrNull;
 
     final message = ref.watch(getSubCollectionStream);
 
-    final agentFilterRoom = agentRoom.valueOrNull
-        ?.where((element) =>
-            element.users.contains(agent!.propertyOwnerId) &&
-            element.users.contains(user) &&
-            element.roomId == agent!.propertyId)
-        .toList();
+    final roomId =
+        '${property?.propertyId}-${agentRoom?.users[0]}-${property?.propertyOwnerId}';
 
-    final filterRoom = room.valueOrNull
-        ?.where((element) =>
-            element.users.contains(property?.propertyOwnerId) &&
-            element.users.contains(user) &&
-            element.roomId == property?.propertyId)
-        .toList();
-
-    // print('firete ${agentFilterRoom?[0].roomId}');
-    //print('helll ${filterRoom?[0].roomId}');
-    // print('property, $property');
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -144,19 +127,14 @@ class ChatScreen extends HookConsumerWidget {
                           color:
                               Theme.of(context).primaryColor.withOpacity(0.2)),
                       child: ImageCaches(
-                        imageUrl: nav
-                            ? property?.propertyImages[0] ?? ""
-                            : agent?.propertyImages[0] ?? "",
-                      ),
+                          imageUrl: property?.propertyImages[0] ?? ""),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20.0),
                       child: Column(
                         children: [
                           Text(
-                            nav
-                                ? property?.propertyName ?? ""
-                                : agent?.propertyName ?? "",
+                            property?.propertyName ?? "",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall
@@ -166,7 +144,7 @@ class ChatScreen extends HookConsumerWidget {
                                     fontSize: 15),
                           ),
                           Text(
-                            'Type: ${nav ? property?.propertyType ?? "" : agent?.propertyType ?? ""}',
+                            'Type: ${property?.propertyType ?? ""}',
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       color: Colors.grey,
@@ -181,11 +159,7 @@ class ChatScreen extends HookConsumerWidget {
                       padding: const EdgeInsets.only(right: 20.0),
                       child: Text(
                         NumberFormat.currency(symbol: "₦ ", decimalDigits: 0)
-                            .format(
-                          nav
-                              ? property?.propertyPrice ?? 0.0
-                              : agent?.propertyPrice ?? 0.0,
-                        ),
+                            .format(property?.propertyPrice ?? 0.0),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.bold,
@@ -202,44 +176,18 @@ class ChatScreen extends HookConsumerWidget {
             Expanded(
               child: SizedBox(
                 height: 450,
-                // child: room.valueOrNull?.first.users.isNotEmpty ?? false
-                //     ? const Center(
-                //         child: Text('No message'),
-                //       )
-                child: (nav
-                        ? filterRoom?.isEmpty ?? false
-                        : agentFilterRoom?.isEmpty ?? false)
+                child: (agentRoom?.isNull ?? false)
                     ? const SizedBox()
                     : AsyncWidget(
                         asyncValue: message,
                         data: (data) {
                           data.sort(
                               (a, b) => a.timestamp.compareTo(b.timestamp));
-                          final allData = nav
-                              ? data.reversed
-                                  .where((element) =>
-                                      element.propertyId ==
-                                      filterRoom?.last.roomId)
-                                  .toList()
-                              : data.reversed
-                                  .where(
-                                    (element) =>
-                                        element.propertyId ==
-                                        agentFilterRoom?.last.roomId,
-                                  )
-                                  .toList();
+                          final allData = data.reversed
+                              .where((element) => element.propertyId == id)
+                              .toList();
 
-                          // final agentAllData = data.reversed
-                          //     .where(
-                          //       (element) =>
-                          //           element.propertyId ==
-                          //           agentFilterRoom?.last.roomId,
-                          //     )
-                          //     .toList();
-
-                          // print('alldata $agentAllData');
-
-                          return (nav ? allData.isEmpty : data.isEmpty)
+                          return (allData.isEmpty)
                               ? const SizedBox()
                               : ListView.builder(
                                   reverse: true,
@@ -398,43 +346,35 @@ class ChatScreen extends HookConsumerWidget {
                         ),
                       ).onTap(() async {
                         final message = Message(
-                          message: messageController.text,
-                          sendBy: user ?? '',
-                          timestamp: await NTP.now(),
-                          //Timestamp.now(),
-                          propertyId: nav
-                              ? property?.propertyId ?? ""
-                              : agent?.propertyId ?? "",
-                        );
+                            message: messageController.text,
+                            sendBy: user ?? '',
+                            timestamp: await NTP.now(),
+                            propertyId: roomId);
 
                         final room1 = Room(
                           lastMessage: messageController.text,
                           lastMessageTime: DateTime.now(),
-                          roomId: nav
-                              ? property?.propertyId ?? ""
-                              : agent?.propertyId ?? "",
-                          users: nav ? getRoo!.users : agentRoo!.users,
+                          roomId: property?.propertyId ?? "",
+                          id: roomId,
+                          users: agentRoom?.users ?? [],
                         );
 
                         ref
                             .read(messageRepositoryProvider.notifier)
                             .sendMessage(
-                                roomId: nav
-                                    ? property?.propertyId ?? ""
-                                    : agent?.propertyId ?? "",
-                                //  roomId: getRoo.valueOrNull?.roomId,
-                                room: room1,
-                                message: message,
-                                updateRoom: Room(
+                              roomId: roomId,
+                              //  roomId: getRoo.valueOrNull?.roomId,
+                              room: room1,
+                              message: message,
+                              updateRoom: Room(
                                   lastMessage: messageController.text,
                                   lastMessageTime: DateTime.now(),
-                                  users: nav ? getRoo!.users : agentRoo!.users,
-
-                                  roomId: nav
-                                      ? property?.propertyId ?? ""
-                                      : agent?.propertyId ?? "",
+                                  users: agentRoom?.users ?? [],
+                                  roomId: '${property?.propertyId}',
+                                  id: roomId
                                   //     agent!: agent!,
-                                ));
+                                  ),
+                            );
 
                         messageController.clear();
                       }),
